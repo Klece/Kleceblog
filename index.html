@@ -289,7 +289,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('background.jpg');
+            background-image: url('content/background.jpg');
             background-size: cover;
             background-position: center;
             filter: blur(4px);
@@ -352,6 +352,27 @@
         .tech-icon {
             filter: drop-shadow(0 0 5px rgba(106, 17, 203, 0.5));
         }
+        .tooltip {
+            position: absolute;
+            background-color: #6a11cb;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .tooltip.show {
+            opacity: 1;
+        }
+        #poem-display {
+            transition: opacity 0.3s ease;
+            font-style: italic;
+        }
     </style>
 </head>
 <body class="text-gray-800 dark:text-gray-200 min-h-screen">
@@ -401,79 +422,69 @@
             <div class="lg:col-span-1 animate-fade-in">
                 <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 card-hover">
                     <!-- 头像 -->
-                    <div class="flex justify-center mb-6">
+                    <div class="flex justify-center mb-6 relative">
                         <img 
                             src="https://avatars.githubusercontent.com/u/241420622?v=4" 
                             alt="Klece" 
                             class="w-36 h-36 rounded-full border-4 border-white dark:border-gray-700 shadow-lg avatar-glow"
                         >
+                        <div id="avatarTooltip" class="tooltip"></div>
                     </div>
                     <!-- 基本信息 -->
                     <div class="text-center mb-6">
                         <h1 class="text-2xl font-bold mb-2">Klece</h1>
                         <p class="text-gray-600 dark:text-gray-400 mb-4">一个普通人</p>
-                        <a 
-                            href="https://github.com/Klece" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-custom text-white font-medium hover:opacity-90 transition-opacity"
-                        >
-                            <i class="fa-brands fa-github mr-2"></i>
-                            访问我的 GitHub
-                        </a>
-                    </div>
-                    <!-- 统计信息 -->
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-primary dark:text-primary-dark mb-1">1</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">总仓库数</div>
+                        <div class="flex justify-center gap-3">
+                            <a 
+                                href="https://github.com/Klece" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-custom text-white font-medium hover:opacity-90 transition-opacity"
+                            >
+                                <i class="fa-brands fa-github mr-2"></i>
+                                访问我的 GitHub
+                            </a>
+                            
+                            <a 
+                                href="#" 
+                                onclick="copyToClipboard('2962065406', 'QQ号'); return false;" 
+                                class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-custom text-white font-medium hover:opacity-90 transition-opacity"
+                                title="点击复制QQ号"
+                            >
+                                <i class="fa-brands fa-qq mr-2"></i>
+                                QQ
+                            </a>
+                            
                         </div>
-                        <div class="bg-gray-100 dark:bg-gray-700 rounded-xl p-4 text-center">
-                            <div class="text-2xl font-bold text-secondary dark:text-secondary-dark mb-1">0</div>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">总 Stars</div>
-                        </div>
                     </div>
-                    <!-- 技术标签 -->
+                    
+                    <!-- 技术栈 -->
                 <div class="mt-6">
                     <h3 class="text-lg font-semibold mb-3">技术栈</h3>
                     <div class="flex flex-wrap gap-2">
                         
                             
-                                <span class="px-3 py-1 rounded-full text-sm flex items-center text-white dark:text-white" style="background-color: #6a11cb;">
-                                    <i class="fa-solid fa-code mr-1 tech-icon"></i>
-                                    Python
-                                </span>
-                            
-                                <span class="px-3 py-1 rounded-full text-sm flex items-center text-white dark:text-white" style="background-color: #0e2e64;">
-                                    <i class="fa-solid fa-code mr-1 tech-icon"></i>
-                                    HTML/CSS
-                                </span>
-                            
-                                <span class="px-3 py-1 rounded-full text-sm flex items-center text-white dark:text-white" style="background-color: gray;">
-                                    <i class="fa-solid fa-code mr-1 tech-icon"></i>
-                                    Shell
-                                </span>
-                            
-                                <span class="px-3 py-1 rounded-full text-sm flex items-center text-white dark:text-white" style="background-color: #2575fc;">
-                                    <i class="fa-solid fa-code mr-1 tech-icon"></i>
-                                    JavaScript
-                                </span>
-                            
-                                <span class="px-3 py-1 rounded-full text-sm flex items-center text-white dark:text-white" style="background-color: gray;">
-                                    <i class="fa-solid fa-code mr-1 tech-icon"></i>
-                                    Dockerfile
-                                </span>
+                                <div class="tech-stack-item px-3 py-2 rounded-lg text-white text-sm flex flex-col items-center cursor-pointer" style="background-color: #6a11cb;">
+                                    <span class="font-medium">Python</span>
+                                </div>
                             
                         
                     </div>
+                    <!-- 技术栈说明 -->
+                    
+                    <div class="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
+                        <p id="poem-display">加载诗句中...</p>
+                    </div>
+                    
                 </div>
                 </div>
                 
-                <!-- 活动图表 -->
+                <!-- 日期显示 -->
                 <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.2s;">
-                    <h3 class="text-lg font-semibold mb-3">GitHub 活动概览</h3>
-                    <div class="h-64">
-                        <canvas id="activityChart"></canvas>
+                    <h3 class="text-lg font-semibold mb-3">日期</h3>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-primary dark:text-primary-dark" id="currentDate">加载中...</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2" id="currentDay">加载中...</p>
                     </div>
                 </div>
             </div>
@@ -487,37 +498,22 @@
                         个人介绍
                     </h2>
                     <div class="max-w-none" id="readme-content">
-                        <h1 id="_1">个人主页</h1>
-<p>欢迎你来到我的个人主页</p>
-<h2 id="_2">关于我</h2>
-<p>一名普通的高中生</p>
+                        <p>这个人很懒，什么都没有留下～</p>
                     </div>
                 </div>
 
-                <!-- 最近仓库 -->
+                <!-- 我的项目 -->
                 <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.4s;">
                     <h2 class="text-2xl font-bold mb-4 flex items-center">
                         <i class="fa-solid fa-folder-open text-primary dark:text-primary-dark mr-2"></i>
-                        最近项目
+                        我的项目
                     </h2>
                     <div class="space-y-4">
                         
-                            
-                                <a href="https://github.com/Klece/Kleceblog" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <h3 class="text-lg font-semibold text-primary dark:text-primary-dark">Kleceblog</h3>
-                                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                                            <i class="fa-solid fa-star mr-1"></i>
-                                            0
-                                        </span>
-                                    </div>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">Klece的个人blog</p>
-                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <span>Python</span>
-                                        <span class="update-date" data-date="2026-03-22T02:32:51Z">更新于 2026-03-22</span>
-                                    </div>
-                                </a>
-                            
+                            <div class="p-6 text-center text-gray-500 dark:text-gray-400">
+                                <i class="fa-solid fa-folder-open text-4xl mb-3"></i>
+                                <p>暂无项目数据</p>
+                            </div>
                         
                     </div>
                 </div>
@@ -528,10 +524,9 @@
     <!-- 页脚 -->
     <footer class="glass-panel bg-white/30 dark:bg-gray-800/30 shadow-inner py-6">
         <div class="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
-            <p>© 2026 Klece. <a href="https://github.com/SRInternet/Home_Page/" target="_blank">个人主页</a>由 Flask + Tailwind CSS 驱动。</p>
+            <p>到底了</p>
             <div class="mt-3 space-x-4">
                 <!-- 联系方式图标，仅在配置了有效URL时显示 -->
-                
                 
                 
                 
@@ -542,10 +537,123 @@
 
     <!-- JavaScript -->
     <script>
+        // 日期更新函数
+        function updateDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekDay = weekDays[now.getDay()];
+            
+            const currentDate = document.getElementById('currentDate');
+            const currentDay = document.getElementById('currentDay');
+            
+            if (currentDate) {
+                currentDate.textContent = `${year}年${month}月${day}日`;
+            }
+            if (currentDay) {
+                currentDay.textContent = weekDay;
+            }
+        }
+        
+        // 复制到剪贴板函数
+        function copyToClipboard(text, name) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert(name + ' ' + text + ' 已复制到剪贴板！');
+            }, function(err) {
+                console.error('复制失败: ', err);
+                // 如果navigator.clipboard不可用，使用传统方法
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert(name + ' ' + text + ' 已复制到剪贴板！');
+                } catch (err) {
+                    console.error('复制失败: ', err);
+                    alert('复制失败，请手动复制：' + text);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+        
         // 深色模式切换
         document.addEventListener('DOMContentLoaded', function() {
             const themeToggle = document.getElementById('theme-toggle');
             const htmlElement = document.documentElement;
+            
+            // 日期显示
+            updateDate();
+            setInterval(updateDate, 1000);
+            
+            // 诗句轮播功能
+            const poems = ["\u4eba\u751f\u82e5\u53ea\u5982\u521d\u89c1\uff0c\u4f55\u4e8b\u79cb\u98ce\u60b2\u753b\u6247", "\u5c71\u6709\u6728\u516e\u6728\u6709\u679d\uff0c\u5fc3\u60a6\u541b\u516e\u541b\u4e0d\u77e5", "\u4e24\u60c5\u82e5\u662f\u4e45\u957f\u65f6\uff0c\u53c8\u5c82\u5728\u671d\u671d\u66ae\u66ae", "\u8863\u5e26\u6e10\u5bbd\u7ec8\u4e0d\u6094\uff0c\u4e3a\u4f0a\u6d88\u5f97\u4eba\u6194\u60b4", "\u4f17\u91cc\u5bfb\u4ed6\u5343\u767e\u5ea6\uff0c\u84e6\u7136\u56de\u9996\uff0c\u90a3\u4eba\u5374\u5728\u706f\u706b\u9611\u73ca\u5904", "\u4eba\u751f\u81ea\u53e4\u8c01\u65e0\u6b7b\uff0c\u7559\u53d6\u4e39\u5fc3\u7167\u6c57\u9752", "\u843d\u7ea2\u4e0d\u662f\u65e0\u60c5\u7269\uff0c\u5316\u4f5c\u6625\u6ce5\u66f4\u62a4\u82b1", "\u6d77\u5185\u5b58\u77e5\u5df1\uff0c\u5929\u6daf\u82e5\u6bd4\u90bb", "\u4e0d\u754f\u6d6e\u4e91\u906e\u671b\u773c\uff0c\u81ea\u7f18\u8eab\u5728\u6700\u9ad8\u5c42", "\u957f\u98ce\u7834\u6d6a\u4f1a\u6709\u65f6\uff0c\u76f4\u6302\u4e91\u5e06\u6d4e\u6ca7\u6d77"];
+            const poemDisplay = document.getElementById('poem-display');
+            if (poemDisplay && poems.length > 0) {
+                let currentPoemIndex = 0;
+                poemDisplay.textContent = poems[0];
+                
+                setInterval(function() {
+                    currentPoemIndex = (currentPoemIndex + 1) % poems.length;
+                    poemDisplay.style.opacity = '0';
+                    setTimeout(function() {
+                        poemDisplay.textContent = poems[currentPoemIndex];
+                        poemDisplay.style.opacity = '1';
+                    }, 300);
+                }, 6000);
+            }
+            
+            // 悬浮窗功能 - 头像
+            const avatar = document.querySelector('.avatar-glow');
+            const avatarTooltip = document.getElementById('avatarTooltip');
+            if (avatar && avatarTooltip) {
+                const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
+                if (tooltips.avatar) {
+                    avatar.addEventListener('mouseenter', function(e) {
+                        avatarTooltip.innerHTML = `<strong>${tooltips.avatar.title}</strong><br>${tooltips.avatar.content}`;
+                        avatarTooltip.classList.add('show');
+                    });
+                    avatar.addEventListener('mouseleave', function() {
+                        avatarTooltip.classList.remove('show');
+                    });
+                }
+            }
+            
+            // 悬浮窗功能 - 技术栈标签
+            const techStack = [{"color": "#6a11cb", "description": "\u719f\u7ec3\u4f7f\u7528Python\u8fdb\u884c\u540e\u7aef\u5f00\u53d1\u548c\u811a\u672c\u7f16\u5199", "name": "Python"}];
+            const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
+            if (techStack.length > 0 && tooltips.tech_stack) {
+                techStack.forEach((tech, index) => {
+                    setTimeout(() => {
+                        const techElements = document.querySelectorAll('.tech-stack-item');
+                        if (techElements[index]) {
+                            const tooltipId = `tooltip-${index}`;
+                            let tooltip = document.getElementById(tooltipId);
+                            if (!tooltip) {
+                                tooltip = document.createElement('div');
+                                tooltip.id = tooltipId;
+                                tooltip.className = 'tooltip';
+                                document.body.appendChild(tooltip);
+                            }
+                            
+                            if (tooltips.tech_stack[tech.name]) {
+                                techElements[index].addEventListener('mouseenter', function(e) {
+                                    const techInfo = tooltips.tech_stack[tech.name];
+                                    tooltip.innerHTML = `<strong>${techInfo.title}</strong><br>${techInfo.content}`;
+                                    tooltip.style.left = e.pageX + 10 + 'px';
+                                    tooltip.style.top = e.pageY + 10 + 'px';
+                                    tooltip.classList.add('show');
+                                });
+                                techElements[index].addEventListener('mouseleave', function() {
+                                    tooltip.classList.remove('show');
+                                });
+                            }
+                        }
+                    }, 100 * index);
+                });
+            }
             
             // 检查本地存储或系统偏好
             const savedTheme = localStorage.getItem('theme');
@@ -623,60 +731,6 @@
                     minimalModeToggle.querySelector('i').classList.remove('text-primary', 'dark:text-primary-dark');
                 }
             });
-            
-            // 活动图表
-            const ctx = document.getElementById('activityChart');
-            if (ctx) {
-                const isDark = htmlElement.classList.contains('dark');
-                const textColor = isDark ? '#9CA3AF' : '#4B5563';
-                
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                        datasets: [{
-                            label: '代码提交',
-                            data: [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
-                            borderColor: isDark ? '#a855f7' : '#6a11cb',
-                            backgroundColor: isDark ? 'rgba(168, 85, 247, 0.1)' : 'rgba(106, 17, 203, 0.1)',
-                            tension: 0.4,
-                            fill: true
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
-                                },
-                                ticks: {
-                                    color: textColor
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                },
-                                ticks: {
-                                    color: textColor
-                                }
-                            }
-                        }
-                    }
-                });
-            }
             
             // 添加页面滚动动画
             const observer = new IntersectionObserver((entries) => {

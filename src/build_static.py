@@ -9,19 +9,22 @@ import shutil
 import importlib.util
 import json  # 导入json模块
 
-# 设置工作目录
+# 设置工作目录为src目录
 here = os.path.dirname(os.path.abspath(__file__))
 os.chdir(here)
 
+# 获取项目根目录（Home_Page）
+BASE_DIR = os.path.dirname(here)
+
 # 设置静态文件目录为项目根目录
-static_dir = here
+static_dir = BASE_DIR
 print(f"将在项目根目录 {static_dir} 生成静态文件")
 
 print("正在准备生成静态文件...")
 
-# 读取config.json配置文件，如不存在则从default文件夹复制
-config_path = os.path.join(here, 'config.json')
-default_config_path = os.path.join(here, 'default', 'default_config.json')
+# 读取config.json配置文件
+config_path = os.path.join(BASE_DIR, 'config', 'config.json')
+default_config_path = os.path.join(BASE_DIR, 'default', 'default_config.json')
 
 if os.path.exists(config_path):
     with open(config_path, 'r', encoding='utf-8') as f:
@@ -33,6 +36,7 @@ else:
     # 尝试从default文件夹复制默认配置
     if os.path.exists(default_config_path):
         print(f"从{default_config_path}复制默认配置到{config_path}")
+        os.makedirs(os.path.dirname(config_path), exist_ok=True)
         shutil.copy2(default_config_path, config_path)
         # 读取复制过来的配置
         with open(config_path, 'r', encoding='utf-8') as f:
@@ -40,9 +44,10 @@ else:
         background_image = config.get('background', {}).get('image', 'background.jpg')
         
         # 同时检查背景图片是否存在，如果不存在也从default文件夹复制
-        if background_image and not os.path.exists(background_image) and os.path.exists(os.path.join('default', background_image)):
+        if background_image and not os.path.exists(os.path.join(BASE_DIR, 'content', background_image)) and os.path.exists(os.path.join(BASE_DIR, 'default', background_image)):
             print(f"{background_image}不存在，从default文件夹复制")
-            shutil.copy2(os.path.join('default', background_image), background_image)
+            os.makedirs(os.path.join(BASE_DIR, 'content'), exist_ok=True)
+            shutil.copy2(os.path.join(BASE_DIR, 'default', background_image), os.path.join(BASE_DIR, 'content', background_image))
     else:
         print("警告：default/default_config.json也不存在，使用默认背景图片")
         background_image = 'background.jpg'
@@ -94,31 +99,43 @@ except Exception as e:
 
 # 复制其他必要的静态资源到根目录
 print("正在复制其他静态资源...")
+
+# 创建 content 目录（如果不存在）
+content_dir = os.path.join(static_dir, 'content')
+os.makedirs(content_dir, exist_ok=True)
+
 for file in [background_image]:  # 使用从配置中读取的背景图片文件名
-    src = os.path.join(here, 'static_build', file)
+    src = os.path.join(BASE_DIR, 'content', file)
     if not os.path.exists(src):
-        # 如果在static_build目录中找不到，则尝试在当前目录查找
-        src = os.path.join(here, file)
+        # 如果在content目录中找不到，则尝试在default目录查找
+        src = os.path.join(BASE_DIR, 'default', file)
     
     if os.path.exists(src):
-        dst = os.path.join(static_dir, file)
+        # 复制到 content 目录，保持目录结构
+        dst_content = os.path.join(content_dir, file)
         
-        # 检查源文件和目标文件是否为同一个文件
         try:
             # 首先确认是否已有该资源文件，如果有则备份
-            if os.path.exists(dst):
-                backup_path = f"{dst}.bak"
-                shutil.copy(dst, backup_path)
+            if os.path.exists(dst_content):
+                backup_path = f"{dst_content}.bak"
+                shutil.copy(dst_content, backup_path)
                 print(f"已备份现有资源文件到: {backup_path}")
             
-            # 检查是否为同一个文件
-            if not os.path.samefile(src, dst):
-                shutil.copy(src, dst)
-                print(f"已复制资源文件: {file}")
+            # 检查是否为同一个文件（只有当目标文件存在时才检查）
+            if os.path.exists(dst_content):
+                if not os.path.samefile(src, dst_content):
+                    shutil.copy(src, dst_content)
+                    print(f"已复制资源文件到 content/: {file}")
+                else:
+                    print(f"源文件和目标文件是同一个文件，跳过复制: {file}")
             else:
-                print(f"源文件和目标文件是同一个文件，跳过复制: {file}")
+                # 目标文件不存在，直接复制
+                shutil.copy(src, dst_content)
+                print(f"已复制资源文件到 content/: {file}")
         except shutil.SameFileError:
             print(f"源文件和目标文件是同一个文件，跳过复制: {file}")
+    else:
+        print(f"警告：未找到资源文件: {file}")
 
 print("\n静态文件构建完成！")
 print(f"\n静态HTML文件已生成在项目根目录: {os.path.join(static_dir, 'index.html')}")

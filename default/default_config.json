@@ -1,8 +1,9 @@
 {
- "github_url": "https://github.com/Klece/Kleceblog",
+  "github_url": "https://github.com/Klece/Kleceblog",
   "dark_mode": "auto",
   "name": "Klece",
   "bio": "一个普通人",
+  "avatar_url": "https://avatars.githubusercontent.com/u/241420622?v=4",
   "introduction_file": "Introduction.md",
   "theme": {
     "primary_color": "#6a11cb",
@@ -23,5 +24,27 @@
     "bilibili": "",
     "douyin": "",
     "xiaohongshu": ""
-  }
+  },
+  "tech_stack": [
+    {
+      "name": "Python",
+      "color": "#6a11cb",
+      "description": "熟练使用Python进行后端开发和脚本编写"
+    },
+    {
+      "name": "JavaScript",
+      "color": "#2575fc",
+      "description": "能够使用JavaScript进行前端开发"
+    },
+    {
+      "name": "HTML/CSS",
+      "color": "#560bad",
+      "description": "熟练掌握HTML和CSS，能够设计响应式网页"
+    },
+    {
+      "name": "Flask",
+      "color": "#1e40af",
+      "description": "能够使用Flask框架开发Web应用"
+    }
+  ]
 }

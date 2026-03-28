@@ -66,4 +66,7 @@ static_build1/
 
 # 不需要workflows目录
 .github/workflows/
-index.html
+
+# 注意：如果使用 GitHub Actions 自动部署，可以忽略 index.html
+# 如果手动部署，需要将 index.html 添加到仓库
+# index.html
