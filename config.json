@@ -1,0 +1,27 @@
+{
+ "github_url": "https://github.com/Klece",
+  "dark_mode": "auto",
+  "name": "Klece",
+  "bio": "一个普通人",
+  "introduction_file": "Introduction.md",
+  "theme": {
+    "primary_color": "#6a11cb",
+    "secondary_color": "#2575fc",
+    "dark_primary_color": "#a855f7",
+    "dark_secondary_color": "#60a5fa"
+  },
+  "background": {
+    "image": "background.jpg",
+    "blur": 4,
+    "overlay_opacity": 0.6,
+    "overlay_color": "#f3f4f6",
+    "dark_overlay_color": "#121212"
+  },
+  "contact": {
+    "qq": "",
+    "wechat": "",
+    "bilibili": "",
+    "douyin": "",
+    "xiaohongshu": ""
+  }
+}
