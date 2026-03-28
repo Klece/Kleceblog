@@ -191,38 +191,83 @@ def make_github_request(url, timeout=5):
         return MockResponse()
 
 # 从GitHub获取项目列表
+
 def get_github_projects():
+
     print("开始从GitHub获取项目列表")
-    github_url = config.get('github_url', 'https://github.com/example')
-    username = github_url.rstrip('/').split('/')[-1]
-    print(f"从GitHub获取用户 {username} 的项目")
+
     
+
+    github_url = config.get('github_url', 'https://github.com/example')
+
+    username = github_url.rstrip('/').split('/')[-1]
+
+    print(f"从GitHub获取用户 {username} 的项目")
+
+    
+
     try:
+
         repos_response = make_github_request(f'https://api.github.com/users/{username}/repos?sort=pushed&per_page=100')
+
         
+
         if repos_response.status_code == 200:
+
             repos = repos_response.json()
+
             print(f"成功获取到 {len(repos)} 个项目")
+
             
+
+            if len(repos) == 0:
+
+                print(f"警告：用户 {username} 没有公开的仓库")
+
+            
+
             # 转换为项目列表格式
+
             projects = []
+
             for repo in repos:
+
                 projects.append({
+
                     "name": repo.get('name'),
+
                     "description": repo.get('description', '暂无描述'),
+
                     "url": repo.get('html_url'),
+
                     "language": repo.get('language', 'Unknown'),
+
                     "tags": [repo.get('language')] if repo.get('language') else [],
+
                     "stars": repo.get('stargazers_count', 0),
+
                     "updated": repo.get('pushed_at', '')[:10] if repo.get('pushed_at') else ''
+
                 })
+
             
+
             return projects[:10]  # 只返回最近10个项目
+
         else:
+
             print(f"GitHub API返回错误: {repos_response.status_code}")
+
+            if repos_response.status_code == 403:
+
+                print("提示：可能受到 GitHub API 限制，请稍后再试")
+
             return []
+
     except Exception as e:
+
         print(f"获取GitHub项目失败: {e}")
+
         return []
 
 # 获取项目列表（优先从GitHub，失败则从本地）
@@ -259,6 +304,8 @@ def index():
     
     # 检查背景图片
     background_image = config.get('background', {}).get('image', 'background.jpg')
+    print(f"开始检查背景图片: {background_image}")
+    
     possible_paths = [
         os.path.join(BASE_DIR, 'content', background_image),
         os.path.join(BASE_DIR, background_image),
@@ -266,20 +313,28 @@ def index():
         os.path.join(os.getcwd(), 'static', background_image)
     ]
     
+    print(f"可能的背景图片路径: {possible_paths}")
+    
     background_exists = False
     background_path = background_image
     
     for path in possible_paths:
+        print(f"检查路径: {path}, 存在: {os.path.exists(path)}")
         if os.path.exists(path):
             background_exists = True
             if 'static' in path:
                 background_path = f'/static/{background_image}'
+                print(f"使用static路径: {background_path}")
             elif BASE_DIR in path:
                 # 使用相对路径，便于部署到 GitHub Pages
                 background_path = f'content/{background_image}'
+                print(f"使用content相对路径: {background_path}")
             else:
                 background_path = background_image
+                print(f"使用原始路径: {background_path}")
             break
+    
+    print(f"最终背景图片状态: exists={background_exists}, path={background_path}")
     
     # 构建返回数据
     github_info = {
@@ -306,6 +361,14 @@ def index():
 @app.route('/api/config')
 def get_config():
     return jsonify(config)
+
+@app.route('/content/<path:filename>')
+def serve_content_file(filename):
+    """服务 content 目录中的静态文件"""
+    try:
+        return send_from_directory(os.path.join(BASE_DIR, 'content'), filename)
+    except FileNotFoundError:
+        abort(404)
 
 @app.route('/<path:filename>')
 def serve_root_file(filename):

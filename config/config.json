@@ -4,7 +4,7 @@
   "name": "Klece",
   "bio": "一个普通人",
   "avatar_url": "https://avatars.githubusercontent.com/u/241420622?v=4",
-  "introduction_file": "Introduction.md",
+  "introduction_file": "content/Introduction.md",
   "theme": {
     "primary_color": "#6a11cb",
     "secondary_color": "#2575fc",
