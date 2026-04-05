@@ -297,12 +297,95 @@ def get_projects():
 def get_github_contributions(days=7):
     """获取用户最近days天的GitHub贡献数据（commit次数）"""
     from datetime import datetime, timedelta
-    import collections
     
     github_url = config.get('github_url', 'https://github.com/example')
     username = github_url.rstrip('/').split('/')[-1]
     
     print(f"开始获取用户 {username} 最近 {days} 天的贡献数据")
+    
+    try:
+        # 使用 GraphQL API 获取贡献数据
+        query = """
+        query($login: String!, $from: DateTime!) {
+          user(login: $login) {
+            contributionsCollection(from: $from) {
+              contributionCalendar {
+                weeks {
+                  contributionDays {
+                    date
+                    contributionCount
+                  }
+                }
+              }
+            }
+          }
+        }
+        """
+        
+        # 计算 from 日期（最近365天）
+        from_date = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        
+        variables = {
+            'login': username,
+            'from': from_date
+        }
+        
+        # 调用 GraphQL API
+        headers = {'Authorization': f'Bearer {os.environ.get("GITHUB_TOKEN", "")}', 'Content-Type': 'application/json'}
+        
+        # 如果没有 Token，使用 REST API
+        if not headers['Authorization'] or headers['Authorization'] == 'Bearer ':
+            print("未配置 GitHub Token，使用备用方案")
+            return get_contributions_via_rest_api(username, days)
+        
+        graphql_response = make_github_request('https://api.github.com/graphql', timeout=10)
+        
+        if graphql_response.status_code != 200:
+            print(f"GraphQL API返回错误: {graphql_response.status_code}")
+            return get_contributions_via_rest_api(username, days)
+        
+        import json
+        data = graphql_response.json()
+        
+        # 解析贡献数据
+        contributions_dict = {}
+        try:
+            weeks = data['data']['user']['contributionsCollection']['contributionCalendar']['weeks']
+            for week in weeks:
+                for day in week['contributionDays']:
+                    if day['contributionCount'] > 0:
+                        date_str = day['date']
+                        contributions_dict[date_str] = day['contributionCount']
+        except KeyError as e:
+            print(f"解析GraphQL数据失败: {e}")
+            return generate_default_contributions(days)
+        
+        # 生成最近 days 天的数据
+        result = []
+        today = datetime.now()
+        
+        for i in range(days - 1, -1, -1):
+            date = today - timedelta(days=i)
+            date_str = date.strftime('%Y-%m-%d')
+            result.append({
+                'date': date.strftime('%m/%d'),
+                'count': contributions_dict.get(date_str, 0)
+            })
+        
+        print(f"贡献数据: {[(r['date'], r['count']) for r in result]}")
+        return result
+        
+    except Exception as e:
+        print(f"获取GitHub贡献数据失败: {e}")
+        return get_contributions_via_rest_api(username, days)
+
+# 通过 REST API 获取贡献数据（备用方案）
+def get_contributions_via_rest_api(username, days=7):
+    """通过 REST API 获取贡献数据"""
+    from datetime import datetime, timedelta
+    import collections
+    
+    print(f"使用 REST API 获取用户 {username} 的贡献数据")
     
     try:
         # 调用 GitHub Events API
@@ -317,6 +400,8 @@ def get_github_contributions(days=7):
         
         # 统计每个日期的提交次数
         contributions = collections.defaultdict(int)
+        # 记录每个仓库每个日期已经处理过的 commit SHA，避免重复计算
+        processed_commits = set()
         
         for event in events:
             if event['type'] == 'PushEvent':
@@ -326,7 +411,33 @@ def get_github_contributions(days=7):
                 
                 # 统计该日期的 commit 次数
                 if 'payload' in event and 'commits' in event['payload']:
-                    contributions[date_str] += len(event['payload']['commits'])
+                    commits = event['payload']['commits']
+                    if len(commits) > 0:
+                        contributions[date_str] += len(commits)
+                        print(f"  从 Event 获取到 {len(commits)} 个提交（{date_str}）")
+                
+                # 无论 Event 中是否有 commits，都尝试从仓库获取
+                repo_name = event.get('repo', {}).get('name', '')
+                if repo_name:
+                    # 尝试获取该仓库的 commits（使用正确的日期范围）
+                    date_start = f"{date_str}T00:00:00Z"
+                    date_end = f"{date_str}T23:59:59Z"
+                    commits_response = make_github_request(
+                        f'https://api.github.com/repos/{repo_name}/commits?since={date_start}&until={date_end}&per_page=100'
+                    )
+                    if commits_response.status_code == 200:
+                        repo_commits = commits_response.json()
+                        if repo_commits:
+                            # 使用 set 去重，避免同一个 commit 被多次计算
+                            unique_commits = set()
+                            for commit in repo_commits:
+                                commit_sha = commit['sha']
+                                commit_key = f"{repo_name}:{commit_sha}"
+                                if commit_key not in processed_commits:
+                                    processed_commits.add(commit_key)
+                                    unique_commits.add(commit_sha)
+                            contributions[date_str] += len(unique_commits)
+                            print(f"  ✓ 从 {repo_name} 获取到 {len(unique_commits)} 个唯一提交（{date_str}）")
         
         # 生成最近 days 天的数据
         result = []
@@ -344,7 +455,7 @@ def get_github_contributions(days=7):
         return result
         
     except Exception as e:
-        print(f"获取GitHub贡献数据失败: {e}")
+        print(f"通过REST API获取贡献数据失败: {e}")
         return generate_default_contributions(days)
 
 # 生成默认贡献数据（API失败时使用）
