@@ -660,6 +660,9 @@
                 const labels = contributions.map(c => c.date);
                 const data = contributions.map(c => c.count);
 
+                // 找到最高提交次数作为顶点
+                const maxCount = Math.max(...data);
+
                 new Chart(ctx, {
                     type: 'line',
                     data: {
@@ -683,15 +686,35 @@
                         plugins: {
                             legend: {
                                 display: false
+                            },
+                            tooltip: {
+                                enabled: true,
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                padding: 12,
+                                displayColors: false,
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].label;
+                                    },
+                                    label: function(context) {
+                                        return `提交次数: ${context.parsed.y}`;
+                                    }
+                                }
                             }
                         },
                         scales: {
                             y: {
                                 beginAtZero: true,
+                                max: maxCount,  // 设置最高提交次数为顶点
                                 grid: {
                                     color: 'rgba(0, 0, 0, 0.05)'
                                 },
                                 ticks: {
+                                    display: false,
                                     font: {
                                         size: 10
                                     }
