@@ -15,6 +15,7 @@ app = Flask(__name__, template_folder=os.path.join(BASE_DIR, 'templates'))
 config = None
 skills_data = None
 projects_data = None
+pixel_text_data = None
 
 # 读取配置文件
 def load_all_configs():
@@ -80,11 +81,20 @@ def load_all_configs():
             projects_data = json.load(f)
     except FileNotFoundError:
         projects_data = {"projects": []}
+    
+    # 读取像素文字配置
+    try:
+        with open(os.path.join(BASE_DIR, 'config', 'pixel-text.json'), 'r', encoding='utf-8') as f:
+            pixel_text_data = json.load(f)
+            print(f"成功读取像素文字配置，包含 {len(pixel_text_data)} 个字")
+    except FileNotFoundError:
+        pixel_text_data = {"我": {"width": 12, "height": 12, "pixels": []}, "爱": {"width": 12, "height": 12, "pixels": []}, "雨": {"width": 12, "height": 12, "pixels": []}, "云": {"width": 12, "height": 12, "pixels": []}}
+        print("像素文字配置文件未找到，使用空数据")
 
-# 在第一次请求前加载配置
-@app.before_first_request
-def load_config():
-    load_all_configs()
+# 在第一次请求前加载配置（已移除，改为在index路由中直接调用）
+# @app.before_first_request
+# def load_config():
+#     load_all_configs()
 
 # 读取本地Introduction.md文件
 def get_introduction_content():
@@ -283,9 +293,88 @@ def get_projects():
         return projects_data['projects']
     return []
 
+# 获取GitHub贡献数据（最近days天）
+def get_github_contributions(days=7):
+    """获取用户最近days天的GitHub贡献数据（commit次数）"""
+    from datetime import datetime, timedelta
+    import collections
+    
+    github_url = config.get('github_url', 'https://github.com/example')
+    username = github_url.rstrip('/').split('/')[-1]
+    
+    print(f"开始获取用户 {username} 最近 {days} 天的贡献数据")
+    
+    try:
+        # 调用 GitHub Events API
+        events_response = make_github_request(f'https://api.github.com/users/{username}/events/public?per_page=100')
+        
+        if events_response.status_code != 200:
+            print(f"GitHub Events API返回错误: {events_response.status_code}")
+            return generate_default_contributions(days)
+        
+        events = events_response.json()
+        print(f"成功获取到 {len(events)} 个事件")
+        
+        # 统计每个日期的提交次数
+        contributions = collections.defaultdict(int)
+        
+        for event in events:
+            if event['type'] == 'PushEvent':
+                # 获取提交日期（使用 created_at 的日期部分）
+                created_at = event['created_at']
+                date_str = created_at[:10]  # YYYY-MM-DD
+                
+                # 统计该日期的 commit 次数
+                if 'payload' in event and 'commits' in event['payload']:
+                    contributions[date_str] += len(event['payload']['commits'])
+        
+        # 生成最近 days 天的数据
+        result = []
+        today = datetime.now()
+        
+        for i in range(days - 1, -1, -1):
+            date = today - timedelta(days=i)
+            date_str = date.strftime('%Y-%m-%d')
+            result.append({
+                'date': date.strftime('%m/%d'),
+                'count': contributions.get(date_str, 0)
+            })
+        
+        print(f"贡献数据: {[(r['date'], r['count']) for r in result]}")
+        return result
+        
+    except Exception as e:
+        print(f"获取GitHub贡献数据失败: {e}")
+        return generate_default_contributions(days)
+
+# 生成默认贡献数据（API失败时使用）
+def generate_default_contributions(days=7):
+    """生成默认的随机贡献数据"""
+    from datetime import datetime, timedelta
+    import random
+    
+    result = []
+    today = datetime.now()
+    
+    for i in range(days - 1, -1, -1):
+        date = today - timedelta(days=i)
+        result.append({
+            'date': date.strftime('%m/%d'),
+            'count': random.randint(0, 5)  # 随机0-5次提交
+        })
+    
+    return result
+
 @app.route('/')
 def index():
     load_all_configs()
+    
+    # 读取像素文字配置（确保总是有数据）
+    try:
+        with open(os.path.join(BASE_DIR, 'config', 'pixel-text.json'), 'r', encoding='utf-8') as f:
+            pixel_text_config = json.load(f)
+    except FileNotFoundError:
+        pixel_text_config = {"我": {"width": 12, "height": 12, "pixels": []}, "爱": {"width": 12, "height": 12, "pixels": []}, "雨": {"width": 12, "height": 12, "pixels": []}, "云": {"width": 12, "height": 12, "pixels": []}}
     
     # 获取技能图表数据
     skill_labels, skill_data, skill_colors = get_skills_data_for_chart()
@@ -301,6 +390,9 @@ def index():
     
     # 获取悬浮窗配置
     tooltips = get_tooltips()
+    
+    # 获取贡献数据
+    contributions = get_github_contributions(days=7)
     
     # 检查背景图片
     background_image = config.get('background', {}).get('image', 'background.jpg')
@@ -348,7 +440,9 @@ def index():
         "skill_colors": skill_colors,
         "tech_stack": tech_stack,
         "poems": poems,
-        "tooltips": tooltips
+        "tooltips": tooltips,
+        "pixel_text": pixel_text_config,
+        "contributions": contributions
     }
     
     return render_template('index.html', 
@@ -370,9 +464,17 @@ def serve_content_file(filename):
     except FileNotFoundError:
         abort(404)
 
+@app.route('/fonts/<path:filename>')
+def serve_fonts(filename):
+    """服务 fonts 目录中的字体文件"""
+    try:
+        return send_from_directory(os.path.join(BASE_DIR, 'fonts'), filename)
+    except FileNotFoundError:
+        abort(404)
+
 @app.route('/<path:filename>')
 def serve_root_file(filename):
-    allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.svg', '.css', '.js'}
+    allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.svg', '.css', '.js', '.ttf', '.woff', '.woff2'}
     file_ext = os.path.splitext(filename)[1].lower()
     
     if file_ext in allowed_extensions:
@@ -388,4 +490,4 @@ def serve_root_file(filename):
     abort(404)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=5000)

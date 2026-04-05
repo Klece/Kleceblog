@@ -29,7 +29,12 @@
     {
       "name": "Python",
       "color": "#6a11cb",
-      "description": "熟练使用Python进行后端开发和脚本编写"
+      "description": "Python"
+    },
+    {
+      "name": "HTML",
+      "color": "#8B4513",
+      "description": "HTML"
     }
   ]
 }

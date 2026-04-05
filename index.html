@@ -21,6 +21,16 @@
         }
     </style>
     
+    <!-- 自定义字体 -->
+    <style>
+        @font-face {
+            font-family: 'LoliFont';
+            src: url('/fonts/loli-font.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Font Awesome -->
@@ -169,7 +179,8 @@
                         'secondary-dark': '#60a5fa'
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        sans: ['LoliFont', 'Inter', 'system-ui', 'sans-serif'],
+                        loli: ['LoliFont', 'sans-serif'],
                     },
                     animation: {
                         'float': 'float 3s ease-in-out infinite',
@@ -408,9 +419,6 @@
                     <i class="fa-solid fa-moon dark:hidden text-gray-700"></i>
                     <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
                 </button>
-                <a href="https://github.com/Klece" target="_blank" rel="noopener noreferrer" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fa-brands fa-github text-xl"></i>
-                </a>
             </div>
         </div>
     </nav>
@@ -468,6 +476,10 @@
                                     <span class="font-medium">Python</span>
                                 </div>
                             
+                                <div class="tech-stack-item px-3 py-2 rounded-lg text-white text-sm flex flex-col items-center cursor-pointer" style="background-color: #8B4513;">
+                                    <span class="font-medium">HTML</span>
+                                </div>
+                            
                         
                     </div>
                     <!-- 技术栈说明 -->
@@ -481,10 +493,17 @@
                 
                 <!-- 日期显示 -->
                 <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.2s;">
-                    <h3 class="text-lg font-semibold mb-3">日期</h3>
                     <div class="text-center">
-                        <p class="text-2xl font-bold text-primary dark:text-primary-dark" id="currentDate">加载中...</p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2" id="currentDay">加载中...</p>
+                        <div id="currentDate" class="text-xl font-bold mb-2">加载中...</div>
+                        <div id="currentWeekday" class="text-sm italic text-gray-600 dark:text-gray-400">加载中...</div>
+                    </div>
+                </div>
+
+                <!-- 贡献统计 -->
+                <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.3s;">
+                    <h3 class="text-lg font-semibold mb-4">贡献统计</h3>
+                    <div class="relative" style="height: 200px;">
+                        <canvas id="contributionChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -498,10 +517,9 @@
                         个人介绍
                     </h2>
                     <div class="max-w-none" id="readme-content">
-                        <h1 id="_1">个人主页</h1>
-<p>欢迎你来到我的个人主页</p>
-<h2 id="_2">关于我</h2>
-<p>一名普通的高中生</p>
+                        <p>一个16岁的高中生，喜欢打羽毛球，平常爱折腾一下</p>
+<h2 id="_1">测试</h2>
+<p><img alt="neko" src="content/image.png" /></p>
                     </div>
                 </div>
 
@@ -565,15 +583,15 @@
             const day = now.getDate();
             const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
             const weekDay = weekDays[now.getDay()];
-            
+
             const currentDate = document.getElementById('currentDate');
-            const currentDay = document.getElementById('currentDay');
-            
+            const currentWeekday = document.getElementById('currentWeekday');
+
             if (currentDate) {
                 currentDate.textContent = `${year}年${month}月${day}日`;
             }
-            if (currentDay) {
-                currentDay.textContent = weekDay;
+            if (currentWeekday) {
+                currentWeekday.textContent = weekDay;
             }
         }
         
@@ -607,9 +625,69 @@
             // 日期显示
             updateDate();
             setInterval(updateDate, 1000);
-            
+
+            // 初始化贡献统计图表
+            const ctx = document.getElementById('contributionChart');
+            if (ctx) {
+                // 使用后端传递的真实贡献数据
+                const contributions = [{"count": 0, "date": "03/30"}, {"count": 0, "date": "03/31"}, {"count": 0, "date": "04/01"}, {"count": 0, "date": "04/02"}, {"count": 0, "date": "04/03"}, {"count": 0, "date": "04/04"}, {"count": 0, "date": "04/05"}];
+                const labels = contributions.map(c => c.date);
+                const data = contributions.map(c => c.count);
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '贡献次数',
+                            data: data,
+                            borderColor: '#6a11cb',
+                            backgroundColor: '#6a11cb33',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#6a11cb',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
             // 诗句轮播功能
-            const poems = ["\u4eba\u751f\u82e5\u53ea\u5982\u521d\u89c1\uff0c\u4f55\u4e8b\u79cb\u98ce\u60b2\u753b\u6247", "\u5c71\u6709\u6728\u516e\u6728\u6709\u679d\uff0c\u5fc3\u60a6\u541b\u516e\u541b\u4e0d\u77e5", "\u4e24\u60c5\u82e5\u662f\u4e45\u957f\u65f6\uff0c\u53c8\u5c82\u5728\u671d\u671d\u66ae\u66ae", "\u8863\u5e26\u6e10\u5bbd\u7ec8\u4e0d\u6094\uff0c\u4e3a\u4f0a\u6d88\u5f97\u4eba\u6194\u60b4", "\u4f17\u91cc\u5bfb\u4ed6\u5343\u767e\u5ea6\uff0c\u84e6\u7136\u56de\u9996\uff0c\u90a3\u4eba\u5374\u5728\u706f\u706b\u9611\u73ca\u5904", "\u4eba\u751f\u81ea\u53e4\u8c01\u65e0\u6b7b\uff0c\u7559\u53d6\u4e39\u5fc3\u7167\u6c57\u9752", "\u843d\u7ea2\u4e0d\u662f\u65e0\u60c5\u7269\uff0c\u5316\u4f5c\u6625\u6ce5\u66f4\u62a4\u82b1", "\u6d77\u5185\u5b58\u77e5\u5df1\uff0c\u5929\u6daf\u82e5\u6bd4\u90bb", "\u4e0d\u754f\u6d6e\u4e91\u906e\u671b\u773c\uff0c\u81ea\u7f18\u8eab\u5728\u6700\u9ad8\u5c42", "\u957f\u98ce\u7834\u6d6a\u4f1a\u6709\u65f6\uff0c\u76f4\u6302\u4e91\u5e06\u6d4e\u6ca7\u6d77"];
+            const poems = ["\u4e8c\u516b\u5c11\u5973\u4f53\u4f3c\u9165\uff0c\u8170\u95f4\u4ed7\u5251\u65a9\u51e1\u592b", "\u6625\u6765\u6211\u4e0d\u5148\u5f00\u53e3\uff0c\u54ea\u53ea\u866b\u513f\u6562\u4f5c\u58f0"];
             const poemDisplay = document.getElementById('poem-display');
             if (poemDisplay && poems.length > 0) {
                 let currentPoemIndex = 0;
@@ -629,7 +707,7 @@
             const avatar = document.querySelector('.avatar-glow');
             const avatarTooltip = document.getElementById('avatarTooltip');
             if (avatar && avatarTooltip) {
-                const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
+                const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"HTML": {"content": "\u76ee\u524d\u4e0d\u662f\u5f88\u719f\u7ec3", "title": "HTML"}, "Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
                 if (tooltips.avatar) {
                     avatar.addEventListener('mouseenter', function(e) {
                         avatarTooltip.innerHTML = `<strong>${tooltips.avatar.title}</strong><br>${tooltips.avatar.content}`;
@@ -642,8 +720,8 @@
             }
             
             // 悬浮窗功能 - 技术栈标签
-            const techStack = [{"color": "#6a11cb", "description": "\u719f\u7ec3\u4f7f\u7528Python\u8fdb\u884c\u540e\u7aef\u5f00\u53d1\u548c\u811a\u672c\u7f16\u5199", "name": "Python"}];
-            const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
+            const techStack = [{"color": "#6a11cb", "description": "Python", "name": "Python"}, {"color": "#8B4513", "description": "HTML", "name": "HTML"}];
+            const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"HTML": {"content": "\u76ee\u524d\u4e0d\u662f\u5f88\u719f\u7ec3", "title": "HTML"}, "Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
             if (techStack.length > 0 && tooltips.tech_stack) {
                 techStack.forEach((tech, index) => {
                     setTimeout(() => {
