@@ -137,6 +137,31 @@ for file in [background_image]:  # 使用从配置中读取的背景图片文件
     else:
         print(f"警告：未找到资源文件: {file}")
 
+# 复制 fonts 目录（如果存在）
+print("正在检查 fonts 目录...")
+fonts_dir = os.path.join(static_dir, 'fonts')
+
+if os.path.exists(fonts_dir):
+    print(f"fonts 目录已存在于项目根目录: {fonts_dir}")
+else:
+    # 尝试从其他位置复制 fonts 目录
+    fonts_src_candidates = [
+        os.path.join(BASE_DIR, 'fonts'),
+        os.path.join(BASE_DIR, 'src', 'fonts'),
+    ]
+    
+    fonts_src = None
+    for candidate in fonts_src_candidates:
+        if os.path.exists(candidate):
+            fonts_src = candidate
+            break
+    
+    if fonts_src:
+        shutil.copytree(fonts_src, fonts_dir)
+        print(f"已复制 fonts 目录到项目根目录: {fonts_dir}")
+    else:
+        print(f"警告：未找到 fonts 源目录")
+
 print("\n静态文件构建完成！")
 print(f"\n静态HTML文件已生成在项目根目录: {os.path.join(static_dir, 'index.html')}")
 print(f"\n如何部署到GitHub Pages:")
