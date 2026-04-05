@@ -84,6 +84,18 @@ try:
                 f.write(response.data)
             
             print(f"静态HTML文件已保存到项目根目录: {html_path}")
+            
+            # 修复字体路径：将绝对路径改为相对路径（适用于 GitHub Pages）
+            with open(html_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            # 将 /fonts/ 改为 ./fonts/
+            html_content = html_content.replace("url('/fonts/", "url('./fonts/")
+            
+            with open(html_path, 'w', encoding='utf-8') as f:
+                f.write(html_content)
+            
+            print("已修复字体路径为相对路径")
         else:
             print(f"错误：无法获取首页内容，状态码: {response.status_code}")
             sys.exit(1)
