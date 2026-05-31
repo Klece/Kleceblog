@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不谈恋爱的100个理由 - Klece</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'LoliFont';
+            src: url('../../fonts/loli-font.ttf') format('truetype');
+        }
+        .loli-font, body, .article-text, .article-text * { font-family: 'LoliFont', 'Inter', system-ui, sans-serif; }
+
+        body {
+            background-color: #121212;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('../../content/background.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(4px);
+            transform: scale(1.1);
+        }
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f3f4f6;
+            opacity: 0.6;
+        }
+        .dark .bg-overlay {
+            background-color: #121212;
+        }
+        
+
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            position: relative; overflow: hidden;
+        }
+        .glass-panel::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, #6a11cb, transparent);
+        }
+        .glass-panel::before {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, #2575fc, transparent);
+        }
+        .glass-panel-plain {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            position: relative; overflow: hidden;
+        }
+        .dark .glass-panel-plain {
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header-glow {
+            text-shadow: 0 2px 12px #6a11cb66;
+        }
+        /* Markdown 内容白色字体 */
+        #article-content, #article-content * { color: #ffffff !important; }
+        #article-content h1, #article-content h2, #article-content h3, #article-content h4 { color: #ffffff !important; border-color: rgba(255,255,255,0.3) !important; }
+        #article-content p, #article-content li, #article-content span { color: #ffffff !important; }
+        #article-content a { color: #93c5fd !important; }
+        #article-content blockquote { border-color: rgba(255,255,255,0.4) !important; background: rgba(255,255,255,0.08) !important; color: #ffffff !important; }
+        #article-content code { background: rgba(255,255,255,0.15) !important; color: #fca5a5 !important; }
+        #article-content pre { background: rgba(0,0,0,0.7) !important; }
+        #article-content pre code { color: #e5e7eb !important; }
+        #article-content hr { border-color: rgba(255,255,255,0.2) !important; }
+        #article-content table, #article-content th, #article-content td { border-color: rgba(255,255,255,0.2) !important; }
+        #article-content th { background: rgba(255,255,255,0.1) !important; color: #ffffff !important; }
+        #article-content td { color: #ffffff !important; }
+        #article-content img { border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-200 min-h-screen">
+    
+    <div class="bg-container">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+    </div>
+    
+
+    <!-- 顶部标题区域 -->
+    <header class="pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <a href="../" class="inline-flex items-center text-white/60 hover:text-white/90 transition-colors mb-4 text-sm">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>返回文章列表
+                </a>
+                <h1 class="text-3xl font-bold header-glow" style="font-family:'LoliFont','Inter',system-ui,sans-serif;color:#fff;">
+                    <i class="fa-solid fa-file-lines mr-3"></i>不谈恋爱的100个理由
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 pb-16">
+        <div class="max-w-4xl mx-auto animate-fade-in">
+            <div class="glass-panel-plain rounded-2xl p-8">
+                <div class="article-text max-w-none" id="article-content" style="font-family:'LoliFont','Inter',system-ui,sans-serif;">
+                    <h1 id="100">我不谈恋爱的100个理由</h1>
+<ol>
+<li>我是神</li>
+<li>神习惯孤独</li>
+<li>神不恋凡尘</li>
+<li>神不碰情爱</li>
+<li>神不结凡缘</li>
+<li>神不惹情债</li>
+<li>神不做凡选</li>
+<li>神不入情局</li>
+<li>神不随凡流</li>
+<li>神不盼陪伴</li>
+<li>神不求偏爱</li>
+<li>神不恋温柔</li>
+<li>神不沾暧昧</li>
+<li>神不谈将就</li>
+<li>神不被牵绊</li>
+<li>神不涉情劫</li>
+<li>神不恋烟火</li>
+<li>神不做妥协</li>
+<li>神不信承诺</li>
+<li>神不盼相守</li>
+<li>神不恋相遇</li>
+<li>神不谈离散</li>
+<li>神不贪温暖</li>
+<li>神不恋依赖</li>
+<li>神不做依附</li>
+<li>神不被定义</li>
+<li>神不被约束</li>
+<li>神不被左右</li>
+<li>神不恋凡俗</li>
+<li>神不恋平庸</li>
+<li>神只守本心</li>
+<li>神只爱自由</li>
+<li>神只做自己</li>
+<li>神只享孤独</li>
+<li>神只信自己</li>
+<li>神只守清寂</li>
+<li>神只图自在</li>
+<li>神只愿独行</li>
+<li>神只守高傲</li>
+<li>神不缺安全感</li>
+<li>神不缺归属感</li>
+<li>神不缺温柔</li>
+<li>神不缺陪伴</li>
+<li>神不缺偏爱</li>
+<li>神不缺理解</li>
+<li>神不缺圆满</li>
+<li>神无需救赎</li>
+<li>神无需讨好</li>
+<li>神无需迎合</li>
+<li>神无需陪伴</li>
+<li>神不谈凡人只谈清醒</li>
+<li>神不谈凡人只谈强大</li>
+<li>神不谈凡人只谈自由</li>
+<li>神不谈凡人只谈自我</li>
+<li>神不谈凡人不谈情爱</li>
+<li>神不谈凡人不谈纠缠</li>
+<li>神不谈凡人不谈暧昧</li>
+<li>神不谈凡人不谈凡缘</li>
+<li>神不谈凡人不谈妥协</li>
+<li>神不谈凡人不谈内耗</li>
+<li>神不谈凡人不谈拖累</li>
+<li>神不谈凡人不谈牵绊</li>
+<li>神不谈凡人不谈心动</li>
+<li>神不谈凡人不谈失望</li>
+<li>神不谈凡人不谈伤害</li>
+<li>神不谈凡人不谈悲欢</li>
+<li>神不谈凡人不谈离合</li>
+<li>神不谈凡人不谈俗爱</li>
+<li>神不谈凡人不谈低质关系</li>
+<li>神不谈凡人不谈短暂温柔</li>
+<li>神总是孤独所以不谈对象</li>
+<li>神总是孤独所以不盼陪伴</li>
+<li>神总是孤独所以不恋凡情</li>
+<li>神总是孤独所以习惯独行</li>
+<li>神总是孤独所以拒绝牵绊</li>
+<li>神总是孤独所以不碰情爱</li>
+<li>神总是孤独所以不结情缘</li>
+<li>神总是孤独所以享受清寂</li>
+<li>神总是孤独所以忠于自己</li>
+<li>神总是孤独所以无需他人</li>
+<li>神总是孤独所以不被打扰</li>
+<li>神总是孤独所以不惹尘埃</li>
+<li>神总是孤独所以保持高傲</li>
+<li>神总是孤独所以保持清醒</li>
+<li>神总是孤独所以远离内耗</li>
+<li>神总是孤独所以远离伤害</li>
+<li>神总是孤独所以远离俗爱</li>
+<li>神总是孤独所以不谈将就</li>
+<li>神总是孤独所以不谈心动</li>
+<li>神总是孤独所以不谈依赖</li>
+<li>神本孤独不谈凡人</li>
+<li>神本高傲不谈情爱</li>
+<li>神本清醒不恋凡尘</li>
+<li>神本自由不被牵绊</li>
+<li>神本圆满不需陪伴</li>
+<li>神本强大不需救赎</li>
+<li>神本51. 神不谈凡人只谈清醒</li>
+<li>神不谈凡人只谈强大</li>
+<li>神不谈凡人只谈自由</li>
+<li>神不谈凡人只谈自我</li>
+<li>神不谈凡人不谈情爱</li>
+<li>神不谈凡人不谈纠缠</li>
+<li>神不谈凡人不谈暧昧</li>
+<li>神不谈凡人不谈凡缘</li>
+<li>神不谈凡人不谈妥协</li>
+<li>神不谈凡人不谈内耗</li>
+<li>神不谈凡人不谈拖累</li>
+<li>神不谈凡人不谈牵绊</li>
+<li>神不谈凡人不谈心动</li>
+<li>神不谈凡人不谈失望</li>
+<li>神不谈凡人不谈伤害</li>
+<li>神不谈凡人不谈悲欢</li>
+<li>神不谈凡人不谈离合</li>
+<li>神不谈凡人不谈俗爱</li>
+<li>神不谈凡人不谈低质关系</li>
+<li>神不谈凡人不谈短暂温柔</li>
+<li>神总是孤独所以不谈对象</li>
+<li>神总是孤独所以不盼陪伴</li>
+<li>神总是孤独所以不恋凡情</li>
+<li>神总是孤独所以习惯独行</li>
+<li>神总是孤独所以拒绝牵绊</li>
+<li>神总是孤独所以不碰情爱</li>
+<li>神总是孤独所以不结情缘</li>
+<li>神总是孤独所以享受清寂</li>
+<li>神总是孤独所以忠于自己</li>
+<li>神总是孤独所以无需他人</li>
+<li>神总是孤独所以不被打扰</li>
+<li>神总是孤独所以不惹尘埃</li>
+<li>神总是孤独所以保持高傲</li>
+<li>神总是孤独所以保持清醒</li>
+<li>神总是孤独所以远离内耗</li>
+<li>神总是孤独所以远离伤害</li>
+<li>神总是孤独所以远离俗爱</li>
+<li>神总是孤独所以不谈将就</li>
+<li>神总是孤独所以不谈心动</li>
+<li>神总是孤独所以不谈依赖</li>
+<li>神本孤独不谈凡人</li>
+<li>神本高傲不谈情爱</li>
+<li>神本清醒不恋凡尘</li>
+<li>神本自由不被牵绊</li>
+<li>神本圆满不需陪伴</li>
+<li>神本强大不需救赎</li>
+<li>神本清寂不惹情事</li>
+<li>神本独行不盼同行</li>
+<li>神本无求不贪温暖</li>
+<li>神本无心不谈对象清寂不惹情事</li>
+<li>神本独行不盼同行</li>
+<li>神本无求不贪温暖</li>
+<li>神本无心不谈对象</li>
+</ol>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.body.classList.add('dark');
+        }
+        function applyStyles() {
+            const c = document.getElementById('article-content');
+            if (!c) return;
+            c.querySelectorAll('h1').forEach(e => { if (!e.style.fontFamily) e.style.cssText += ';font-family:LoliFont,Inter,system-ui,sans-serif;color:#fff;' });
+            c.querySelectorAll('h2, h3, h4, p, li, span').forEach(e => { if (!e.style.fontFamily) e.style.cssText += ';font-family:LoliFont,Inter,system-ui,sans-serif;' });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyStyles);
+        else applyStyles();
+    </script>
+</body>
+</html>

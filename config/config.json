@@ -1,0 +1,40 @@
+{
+  "github_url": "https://github.com/Klece",
+  "dark_mode": "auto",
+  "name": "Klece",
+  "bio": "逆者皆斩",
+  "avatar_url": "https://avatars.githubusercontent.com/u/241420622?v=4",
+  "introduction_file": "content/Introduction.md",
+  "theme": {
+    "primary_color": "#6a11cb",
+    "secondary_color": "#2575fc",
+    "dark_primary_color": "#a855f7",
+    "dark_secondary_color": "#60a5fa"
+  },
+  "background": {
+    "image": "background.jpg",
+    "blur": 4,
+    "overlay_opacity": 0.6,
+    "overlay_color": "#f3f4f6",
+    "dark_overlay_color": "#121212"
+  },
+  "contact": {
+    "qq": "2962065406",
+    "wechat": "",
+    "bilibili": "",
+    "douyin": "",
+    "xiaohongshu": ""
+  },
+  "tech_stack": [
+    {
+      "name": "Python",
+      "color": "#6a11cb",
+      "description": "Python"
+    },
+    {
+      "name": "HTML",
+      "color": "#8B4513",
+      "description": "HTML"
+    }
+  ]
+}

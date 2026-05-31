@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klece - 个人主页</title>
+    <!-- 网页图标，使用用户头像并确保是圆形的 -->
+    
+    <link rel="icon" href="https://avatars.githubusercontent.com/u/241420622?v=4" type="image/png">
+    <!-- 使用SVG过滤器确保头像显示为圆形 -->
+    <svg width="0" height="0" style="position:absolute;">
+        <filter id="roundAvatar">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="0" result="blur"/>
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="goo"/>
+            <feComposite in="SourceGraphic" in2="goo" operator="atop"/>
+        </filter>
+    </svg>
+    <style>
+        link[rel="icon"] {
+            filter: url(#roundAvatar);
+        }
+    </style>
+    
+    <!-- 自定义字体 -->
+    <style>
+        @font-face {
+            font-family: 'LoliFont';
+            src: url('fonts/loli-font.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- Tailwind Typography Plugin -->
+    <script>
+        // 应用 Markdown 样式的函数
+        function applyMarkdownStyles() {
+            const readmeContent = document.getElementById('readme-content');
+            if (readmeContent) {
+                const h1Elements = readmeContent.querySelectorAll('h1');
+                const h2Elements = readmeContent.querySelectorAll('h2');
+                const h3Elements = readmeContent.querySelectorAll('h3');
+                const h4Elements = readmeContent.querySelectorAll('h4');
+                const pElements = readmeContent.querySelectorAll('p');
+                const ulElements = readmeContent.querySelectorAll('ul');
+                const olElements = readmeContent.querySelectorAll('ol');
+                const liElements = readmeContent.querySelectorAll('li');
+                const codeElements = readmeContent.querySelectorAll('code');
+                const preElements = readmeContent.querySelectorAll('pre');
+                const aElements = readmeContent.querySelectorAll('a');
+                const imgElements = readmeContent.querySelectorAll('img');
+                const blockquoteElements = readmeContent.querySelectorAll('blockquote');
+                const hrElements = readmeContent.querySelectorAll('hr');
+                const tableElements = readmeContent.querySelectorAll('table');
+                
+                h1Elements.forEach(el => {
+                    if (!el.className.includes('font-bold')) {
+                        el.className = 'text-4xl font-bold mt-8 mb-4 text-gray-900 dark:text-white border-b pb-3 border-gray-300 dark:border-gray-700';
+                    }
+                });
+                h2Elements.forEach(el => {
+                    if (!el.className.includes('font-bold')) {
+                        el.className = 'text-3xl font-bold mt-6 mb-3 text-gray-900 dark:text-white border-b pb-2 border-gray-300 dark:border-gray-700';
+                    }
+                });
+                h3Elements.forEach(el => {
+                    if (!el.className.includes('font-bold')) {
+                        el.className = 'text-2xl font-bold mt-5 mb-2 text-gray-900 dark:text-white';
+                    }
+                });
+                h4Elements.forEach(el => {
+                    if (!el.className.includes('font-bold')) {
+                        el.className = 'text-xl font-bold mt-4 mb-2 text-gray-900 dark:text-white';
+                    }
+                });
+                pElements.forEach(el => {
+                    if (!el.className.includes('text-gray')) {
+                        el.className = 'mb-4 text-gray-700 dark:text-gray-300 leading-relaxed';
+                    }
+                });
+                ulElements.forEach(el => {
+                    if (!el.className.includes('list-disc')) {
+                        el.className = 'list-disc list-inside mb-4 ml-4 text-gray-700 dark:text-gray-300 space-y-1';
+                    }
+                });
+                olElements.forEach(el => {
+                    if (!el.className.includes('list-decimal')) {
+                        el.className = 'list-decimal list-inside mb-4 ml-4 text-gray-700 dark:text-gray-300 space-y-1';
+                    }
+                });
+                liElements.forEach(el => {
+                    if (!el.className.includes('mb')) {
+                        el.className = 'mb-1';
+                    }
+                });
+                codeElements.forEach(el => {
+                    if (el.parentElement.tagName !== 'PRE' && !el.className.includes('bg-gray')) {
+                        el.className = 'bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-red-600 dark:text-red-400 font-mono text-sm break-words';
+                    }
+                });
+                preElements.forEach(el => {
+                    if (!el.className.includes('bg-gray-900')) {
+                        el.className = 'bg-gray-900 dark:bg-gray-950 text-gray-100 p-4 rounded-lg overflow-x-auto mb-4 text-sm';
+                    }
+                });
+                aElements.forEach(el => {
+                    if (!el.className.includes('text-blue')) {
+                        el.className = 'text-blue-600 dark:text-blue-400 hover:underline font-semibold';
+                    }
+                });
+                imgElements.forEach(el => {
+                    if (!el.className.includes('max-w-full')) {
+                        el.className = 'max-w-full h-auto rounded-lg my-4 shadow-lg';
+                    }
+                });
+                blockquoteElements.forEach(el => {
+                    if (!el.className.includes('border-l')) {
+                        el.className = 'border-l-4 border-gray-400 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 pl-4 py-2 my-4 text-gray-700 dark:text-gray-300 italic';
+                    }
+                });
+                hrElements.forEach(el => {
+                    if (!el.className.includes('border')) {
+                        el.className = 'my-6 border-t border-gray-300 dark:border-gray-700';
+                    }
+                });
+                tableElements.forEach(el => {
+                    if (!el.className.includes('min-w-full')) {
+                        el.className = 'min-w-full border-collapse border border-gray-300 dark:border-gray-700 my-4';
+                    }
+                });
+                
+                // 为 table 的 th 和 td 添加样式
+                const thElements = readmeContent.querySelectorAll('th');
+                const tdElements = readmeContent.querySelectorAll('td');
+                
+                thElements.forEach(el => {
+                    if (!el.className.includes('bg')) {
+                        el.className = 'bg-gray-200 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 px-4 py-2 font-semibold text-gray-900 dark:text-white text-left';
+                    }
+                });
+                
+                tdElements.forEach(el => {
+                    if (!el.className.includes('border')) {
+                        el.className = 'border border-gray-300 dark:border-gray-700 px-4 py-2 text-gray-700 dark:text-gray-300';
+                    }
+                });
+            }
+        }
+        
+        // 在 DOM 加载完成后立即应用样式
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', applyMarkdownStyles);
+        } else {
+            applyMarkdownStyles();
+        }
+    </script>
+    <!-- 配置 Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            DEFAULT: '#6a11cb',
+                            dark: '#a855f7'
+                        },
+                        secondary: {
+                            DEFAULT: '#2575fc',
+                            dark: '#60a5fa'
+                        },
+                        'primary-dark': '#a855f7',
+                        'secondary-dark': '#60a5fa'
+                    },
+                    fontFamily: {
+                        sans: ['LoliFont', 'Inter', 'system-ui', 'sans-serif'],
+                        loli: ['LoliFont', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                    },
+                },
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .text-gradient {
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .bg-gradient-custom {
+                background: linear-gradient(135deg, #6a11cb, #2575fc);
+            }
+            .card-hover {
+                transition: all 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            /* 云母效果和边框光效 */
+            .glass-panel {
+                background: rgba(255, 255, 255, 0.6);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+                position: relative;
+                overflow: hidden;
+            }
+            .glass-panel::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #6a11cb, transparent);
+                animation: border-glow 4s ease-in-out infinite;
+            }
+            .glass-panel::before {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, #2575fc, transparent);
+                animation: border-glow 4s ease-in-out infinite reverse;
+            }
+            /* 深色模式下的边框光效 */
+            .dark .glass-panel::after {
+                background: linear-gradient(90deg, transparent, #a855f7, transparent);
+            }
+            .dark .glass-panel::before {
+                background: linear-gradient(90deg, transparent, #60a5fa, transparent);
+            }
+            .dark .glass-panel {
+                background: rgba(17, 24, 39, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            }
+            @keyframes border-glow {
+                0%, 100% { opacity: 0.3; }
+                50% { opacity: 1; }
+            }
+        }
+    </style>
+    <style>
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        
+        /* 背景样式 */
+        body {
+            
+            background-color: #121212;
+            
+        }
+        
+        /* 在没有背景图片时使用默认背景色 */
+        
+        
+        /* 背景图片容器 */
+        .bg-container {
+            
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            
+        }
+        
+        /* 背景图片 */
+        .bg-image {
+            
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('content/background.jpg');
+            background-size: cover;
+            background-position: center;
+            filter: blur(4px);
+            transform: scale(1.1); /* 略微放大以避免边缘出现空白 */
+            
+        }
+        
+        /* 背景遮罩 */
+        .bg-overlay {
+            
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f3f4f6;
+            opacity: 0.6;
+            
+        }
+        
+        /* 深色模式下的背景遮罩 */
+        .dark .bg-overlay {
+            
+            background-color: #121212;
+            
+        }
+        
+        /* 动画样式 */
+        .avatar-glow {
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(106, 17, 203, 0.3);
+            }
+            to {
+                box-shadow: 0 0 20px rgba(106, 17, 203, 0.8);
+            }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .readme-content {
+            animation: slideIn 0.8s ease-out;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .repo-item {
+            transition: all 0.3s ease;
+        }
+        .repo-item:hover {
+            transform: translateX(5px);
+        }
+        .tech-icon {
+            filter: drop-shadow(0 0 5px rgba(106, 17, 203, 0.5));
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #6a11cb;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        .tooltip.show {
+            opacity: 1;
+        }
+        #poem-display {
+            transition: opacity 0.3s ease;
+            font-style: italic;
+        }
+        .project-hidden { display: none; }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-200 min-h-screen">
+    <!-- 背景容器 -->
+    <div class="bg-container">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+    </div>
+    
+    <!-- 顶部导航栏 -->
+    <nav class="fixed w-full top-0 z-50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <!-- 顶栏左上角显示头像和用户名 -->
+            <div class="flex items-center space-x-3">
+                
+                <img 
+                    src="https://avatars.githubusercontent.com/u/241420622?v=4" 
+                    alt="Klece" 
+                    class="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm"
+                >
+                
+                <span class="font-bold text-lg">Klece</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <!-- 极简模式开关 -->
+                <button id="minimal-mode-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors relative">
+                    <span class="sr-only">切换极简模式</span>
+                    <i class="fa-solid fa-columns text-gray-700 dark:text-gray-300"></i>
+                </button>
+                
+                <!-- 深色模式切换 -->
+                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+                    <i class="fa-solid fa-moon dark:hidden text-gray-700"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-yellow-400"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 pt-24 pb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- 左侧个人信息 -->
+            <div class="lg:col-span-1 animate-fade-in">
+                <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 card-hover">
+                    <!-- 头像 -->
+                    <div class="flex justify-center mb-6 relative">
+                        <img 
+                            src="https://avatars.githubusercontent.com/u/241420622?v=4" 
+                            alt="Klece" 
+                            class="w-36 h-36 rounded-full border-4 border-white dark:border-gray-700 shadow-lg avatar-glow"
+                        >
+                        <div id="avatarTooltip" class="tooltip"></div>
+                    </div>
+                    <!-- 基本信息 -->
+                    <div class="text-center mb-6">
+                        <h1 class="text-2xl font-bold mb-2">Klece</h1>
+                        <p class="text-gray-600 dark:text-gray-400 mb-4">逆者皆斩</p>
+                        <div class="flex justify-center gap-3">
+                            <a 
+                                href="https://github.com/Klece" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-custom text-white font-medium hover:opacity-90 transition-opacity"
+                            >
+                                <i class="fa-brands fa-github mr-2"></i>
+                                访问我的 GitHub
+                            </a>
+                            
+                            <a 
+                                href="#" 
+                                onclick="copyToClipboard('2962065406', 'QQ号'); return false;" 
+                                class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-custom text-white font-medium hover:opacity-90 transition-opacity"
+                                title="点击复制QQ号"
+                            >
+                                <i class="fa-brands fa-qq mr-2"></i>
+                                QQ
+                            </a>
+                            
+                        </div>
+                    </div>
+                    
+                    <!-- 技术栈 -->
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold mb-3">技术栈</h3>
+                    <div class="flex flex-wrap gap-2">
+                        
+                            
+                                <div class="tech-stack-item px-3 py-2 rounded-lg text-white text-sm flex flex-col items-center cursor-pointer" style="background-color: #6a11cb;">
+                                    <span class="font-medium">Python</span>
+                                </div>
+                            
+                                <div class="tech-stack-item px-3 py-2 rounded-lg text-white text-sm flex flex-col items-center cursor-pointer" style="background-color: #8B4513;">
+                                    <span class="font-medium">HTML</span>
+                                </div>
+                            
+                        
+                    </div>
+                    <!-- 技术栈说明 -->
+                    
+                    <div class="mt-3 text-xs text-gray-500 dark:text-gray-400 text-center">
+                        <p id="poem-display">加载诗句中...</p>
+                    </div>
+                    
+                </div>
+                </div>
+                
+                <!-- 日期显示 -->
+                <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.2s;">
+                    <div class="text-center">
+                        <div id="currentDate" class="text-xl font-bold mb-2">加载中...</div>
+                        <div id="currentWeekday" class="text-sm italic text-gray-600 dark:text-gray-400">加载中...</div>
+                    </div>
+                </div>
+
+                <!-- 贡献统计 -->
+                <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.3s;">
+                    <h3 class="text-lg font-semibold mb-4">贡献统计</h3>
+                    <div class="relative" style="height: 200px;">
+                        <canvas id="contributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧内容区域 -->
+            <div class="lg:col-span-2">
+                <!-- README 内容 -->
+                <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 readme-content">
+                    <h2 class="text-2xl font-bold mb-4 flex items-center">
+                        <i class="fa-solid fa-file-lines text-primary dark:text-primary-dark mr-2"></i>
+                        个人介绍
+                    </h2>
+                    <div class="max-w-none" id="readme-content">
+                        <h1 id="blog">静观其变的个人blog</h1>
+<ul>
+<li>我是一名普通的高中生</li>
+<li>可以给我的这个blog项目点个star吗 &gt;_&lt;</li>
+</ul>
+<h2 id="_1">放个图镇一下</h2>
+<p><img alt="neko" src="content/image.png" /></p>
+                    </div>
+                </div>
+
+                <!-- 我的文章 -->
+                <a href="articles/" class="block">
+                    <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.35s;">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-2xl font-bold flex items-center">
+                                <i class="fa-solid fa-book text-primary dark:text-primary-dark mr-2"></i>
+                                我的文章
+                            </h2>
+                            <i class="fa-solid fa-chevron-right text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 mt-2">查看我写的一些文章</p>
+                    </div>
+                </a>
+
+                <!-- 我的项目 -->
+                <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-6 mt-6 card-hover animate-fade-in" style="animation-delay: 0.4s;">
+                    <h2 class="text-2xl font-bold mb-4 flex items-center">
+                        <i class="fa-solid fa-folder-open text-primary dark:text-primary-dark mr-2"></i>
+                        我的项目
+                    </h2>
+                    <div class="space-y-4" id="projects-inner">
+                        
+                            
+                                <a href="https://github.com/Klece/Kleceblog" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600 ">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-lg font-semibold text-primary dark:text-primary-dark">Kleceblog</h3>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                                            <i class="fa-solid fa-star mr-1"></i>
+                                            1
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">一个静态的blog，无需服务器即可部署，个人二改</p>
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        
+                                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">HTML</span>
+                                        
+                                    </div>
+                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span><i class="fa-solid fa-code mr-1"></i>HTML</span>
+                                        <span>更新于 2026-05-01</span>
+                                    </div>
+                                </a>
+                            
+                                <a href="https://github.com/Klece/jj" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600 ">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-lg font-semibold text-primary dark:text-primary-dark">jj</h3>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                                            <i class="fa-solid fa-star mr-1"></i>
+                                            0
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">None</p>
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        
+                                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">Shell</span>
+                                        
+                                    </div>
+                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span><i class="fa-solid fa-code mr-1"></i>Shell</span>
+                                        <span>更新于 2026-05-30</span>
+                                    </div>
+                                </a>
+                            
+                                <a href="https://github.com/Klece/ceshi" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600 project-hidden">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-lg font-semibold text-primary dark:text-primary-dark">ceshi</h3>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                                            <i class="fa-solid fa-star mr-1"></i>
+                                            0
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">111</p>
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        
+                                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">HTML</span>
+                                        
+                                    </div>
+                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span><i class="fa-solid fa-code mr-1"></i>HTML</span>
+                                        <span>更新于 2026-05-30</span>
+                                    </div>
+                                </a>
+                            
+                        
+                    </div>
+                    
+                    <div class="mt-4 text-center" id="toggle-projects-wrap">
+                        <button id="toggle-projects" onclick="toggleProjects()" class="inline-flex items-center px-5 py-2 rounded-full bg-gradient-custom text-white font-medium hover:opacity-90 transition-opacity">
+                            <i class="fa-solid fa-chevron-down mr-1"></i> 展开全部项目
+                        </button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="glass-panel bg-white/30 dark:bg-gray-800/30 shadow-inner py-6">
+        <div class="container mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
+            <p>到底了</p>
+            <div class="mt-3 space-x-4">
+                <!-- 联系方式图标，仅在配置了有效URL时显示 -->
+                
+                
+                
+                
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 日期更新函数
+        function updateDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekDays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekDay = weekDays[now.getDay()];
+
+            const currentDate = document.getElementById('currentDate');
+            const currentWeekday = document.getElementById('currentWeekday');
+
+            if (currentDate) {
+                currentDate.textContent = `${year}年${month}月${day}日`;
+            }
+            if (currentWeekday) {
+                currentWeekday.textContent = weekDay;
+            }
+        }
+        
+        // 复制到剪贴板函数
+        function copyToClipboard(text, name) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert(name + ' ' + text + ' 已复制到剪贴板！');
+            }, function(err) {
+                console.error('复制失败: ', err);
+                // 如果navigator.clipboard不可用，使用传统方法
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert(name + ' ' + text + ' 已复制到剪贴板！');
+                } catch (err) {
+                    console.error('复制失败: ', err);
+                    alert('复制失败，请手动复制：' + text);
+                }
+                document.body.removeChild(textArea);
+            });
+        }
+        
+        // 深色模式切换
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const htmlElement = document.documentElement;
+            
+            // 日期显示
+            updateDate();
+            setInterval(updateDate, 1000);
+
+            // 初始化贡献统计图表
+            const ctx = document.getElementById('contributionChart');
+            if (ctx) {
+                // 使用后端传递的真实贡献数据
+                const contributions = [{"count": 0, "date": "1\u6708"}, {"count": 0, "date": "2\u6708"}, {"count": 3, "date": "3\u6708"}, {"count": 5, "date": "4\u6708"}, {"count": 4, "date": "5\u6708"}, {"count": 0, "date": "6\u6708"}, {"count": 0, "date": "7\u6708"}, {"count": 0, "date": "8\u6708"}, {"count": 0, "date": "9\u6708"}, {"count": 0, "date": "10\u6708"}, {"count": 0, "date": "11\u6708"}, {"count": 0, "date": "12\u6708"}];
+                const labels = contributions.map(c => c.date);
+                const data = contributions.map(c => c.count);
+
+                // 找到最高提交次数作为顶点
+                const maxCount = Math.max(...data);
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '贡献次数',
+                            data: data,
+                            borderColor: '#6a11cb',
+                            backgroundColor: '#6a11cb33',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#6a11cb',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: true,
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                padding: 12,
+                                displayColors: false,
+                                callbacks: {
+                                    title: function(context) {
+                                        return context[0].label;
+                                    },
+                                    label: function(context) {
+                                        return `提交次数: ${context.parsed.y}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: maxCount,  // 设置最高提交次数为顶点
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.05)'
+                                },
+                                ticks: {
+                                    display: false,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 诗句轮播功能
+            const poems = ["\u6d77\u5185\u5b58\u77e5\u5df1\uff0c\u5929\u6daf\u82e5\u6bd4\u90bb", "\u4e07\u9877\u6ce2\u5149\u6447\u6708\u788e\uff0c\u4e00\u5929\u98ce\u9732\u85d5\u82b1\u9999", "\u5fae\u5fae\u98ce\u7c07\u6d6a\uff0c\u6563\u4f5c\u6ee1\u6cb3\u661f", "\u6d41\u6cc9\u5f97\u6708\u5149\uff0c\u5316\u4e3a\u4e00\u6eaa\u96ea", "\u65ad\u8679\u9701\u96e8\uff0c\u51c0\u79cb\u7a7a\uff0c\u5c71\u67d3\u4fee\u7709\u65b0\u7eff", "\u6c34\u5bd2\u6c5f\u9759\uff0c\u6ee1\u76ee\u9752\u5c71\uff0c\u8f7d\u6708\u660e\u5f52", "\u6c5f\u5bd2\u6c34\u4e0d\u6d41\uff0c\u9c7c\u56bc\u6885\u82b1\u5f71", "\u9ad8\u677e\u6f0f\u758f\u6708\uff0c\u843d\u5f71\u5982\u753b\u5730", "\u5750\u770b\u82cd\u82d4\u8272\uff0c\u6b32\u4e0a\u4eba\u8863\u6765", "\u8109\u8109\u82b1\u758f\u5929\u6de1\uff0c\u4e91\u6765\u53bb\u3001\u6570\u679d\u96ea", "\u591c\u9759\u6c34\u5bd2\u9c7c\u4e0d\u98df\uff0c\u6ee1\u8239\u7a7a\u8f7d\u6708\u660e\u5f52", "\u5c71\u4e2d\u4f55\u4e8b\uff1f\u677e\u82b1\u917f\u9152\uff0c\u6625\u6c34\u714e\u8336", "\u63ac\u6c34\u6708\u5728\u624b\uff0c\u5f04\u82b1\u9999\u6ee1\u8863", "\u65e5\u66ae\u9152\u9192\u4eba\u5df2\u8fdc\uff0c\u6ee1\u5929\u98ce\u96e8\u4e0b\u897f\u697c", "\u7ec6\u96e8\u6e7f\u8863\u770b\u4e0d\u89c1\uff0c\u95f2\u82b1\u843d\u5730\u542c\u65e0\u58f0", "\u94fa\u5e8a\u51c9\u6ee1\u68a7\u6850\u6708\uff0c\u6708\u5728\u68a7\u6850\u7f3a\u5904\u660e"];
+            const poemDisplay = document.getElementById('poem-display');
+            if (poemDisplay && poems.length > 0) {
+                let currentPoemIndex = 0;
+                poemDisplay.textContent = poems[0];
+                
+                setInterval(function() {
+                    currentPoemIndex = (currentPoemIndex + 1) % poems.length;
+                    poemDisplay.style.opacity = '0';
+                    setTimeout(function() {
+                        poemDisplay.textContent = poems[currentPoemIndex];
+                        poemDisplay.style.opacity = '1';
+                    }, 300);
+                }, 6000);
+            }
+            
+            // 悬浮窗功能 - 头像
+            const avatar = document.querySelector('.avatar-glow');
+            const avatarTooltip = document.getElementById('avatarTooltip');
+            if (avatar && avatarTooltip) {
+                const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"HTML": {"content": "\u76ee\u524d\u4e0d\u662f\u5f88\u719f\u7ec3", "title": "HTML"}, "Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
+                if (tooltips.avatar) {
+                    avatar.addEventListener('mouseenter', function(e) {
+                        avatarTooltip.innerHTML = `<strong>${tooltips.avatar.title}</strong><br>${tooltips.avatar.content}`;
+                        avatarTooltip.classList.add('show');
+                    });
+                    avatar.addEventListener('mouseleave', function() {
+                        avatarTooltip.classList.remove('show');
+                    });
+                }
+            }
+            
+            // 悬浮窗功能 - 技术栈标签
+            const techStack = [{"color": "#6a11cb", "description": "Python", "name": "Python"}, {"color": "#8B4513", "description": "HTML", "name": "HTML"}];
+            const tooltips = {"avatar": {"content": "\u4f60\u597d\u5440\u55b5~\u003cbr\u003e\u6211\u662fKlece", "title": "\u6211"}, "tech_stack": {"HTML": {"content": "\u76ee\u524d\u4e0d\u662f\u5f88\u719f\u7ec3", "title": "HTML"}, "Python": {"content": "\u4e00\u79cd\u8bed\u8a00", "title": "Python"}}};
+            if (techStack.length > 0 && tooltips.tech_stack) {
+                techStack.forEach((tech, index) => {
+                    setTimeout(() => {
+                        const techElements = document.querySelectorAll('.tech-stack-item');
+                        if (techElements[index]) {
+                            const tooltipId = `tooltip-${index}`;
+                            let tooltip = document.getElementById(tooltipId);
+                            if (!tooltip) {
+                                tooltip = document.createElement('div');
+                                tooltip.id = tooltipId;
+                                tooltip.className = 'tooltip';
+                                document.body.appendChild(tooltip);
+                            }
+                            
+                            if (tooltips.tech_stack[tech.name]) {
+                                techElements[index].addEventListener('mouseenter', function(e) {
+                                    const techInfo = tooltips.tech_stack[tech.name];
+                                    tooltip.innerHTML = `<strong>${techInfo.title}</strong><br>${techInfo.content}`;
+                                    tooltip.style.left = e.pageX + 10 + 'px';
+                                    tooltip.style.top = e.pageY + 10 + 'px';
+                                    tooltip.classList.add('show');
+                                });
+                                techElements[index].addEventListener('mouseleave', function() {
+                                    tooltip.classList.remove('show');
+                                });
+                            }
+                        }
+                    }, 100 * index);
+                });
+            }
+            
+            // 检查本地存储或系统偏好
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            // 根据配置设置初始主题
+            const configDarkMode = 'auto';
+            if (savedTheme) {
+                htmlElement.classList.toggle('dark', savedTheme === 'dark');
+            } else if (configDarkMode === 'auto') {
+                htmlElement.classList.toggle('dark', prefersDark);
+            } else if (configDarkMode === 'dark') {
+                htmlElement.classList.add('dark');
+            }
+            
+            // 主题切换事件
+            themeToggle.addEventListener('click', function() {
+                htmlElement.classList.toggle('dark');
+                localStorage.setItem('theme', htmlElement.classList.contains('dark') ? 'dark' : 'light');
+            });
+            
+            // 监听系统主题变化
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+                if (configDarkMode === 'auto' && !localStorage.getItem('theme')) {
+                    htmlElement.classList.toggle('dark', e.matches);
+                }
+            });
+            
+            /* 极简模式功能 */
+            const minimalModeToggle = document.getElementById('minimal-mode-toggle');
+            // 修改选择器，包含所有板块，修复转义字符
+            const contentSections = document.querySelectorAll('div.lg\\:col-span-1, div.lg\\:col-span-2 > div, div.lg\\:col-span-2 > a');
+            const bgImage = document.querySelector('.bg-image');
+            let isMinimalMode = false;
+            
+            // 极简模式切换事件处理
+            minimalModeToggle.addEventListener('click', () => {
+                isMinimalMode = !isMinimalMode;
+                
+                if (isMinimalMode) {
+                    // 进入极简模式：隐藏所有板块，背景blur效果逐渐消失
+                    contentSections.forEach(section => {
+                        section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        section.style.opacity = '0';
+                        section.style.transform = 'translateY(20px)';
+                        section.style.pointerEvents = 'none';
+                    });
+                    
+                    // 移除背景模糊效果
+                    if (bgImage) {
+                        bgImage.style.transition = 'filter 0.5s ease';
+                        bgImage.style.filter = 'blur(0px)';
+                    }
+                    
+                    // 给极简模式按钮添加激活样式
+                    minimalModeToggle.classList.add('bg-primary/20', 'dark:bg-primary-dark/20');
+                    minimalModeToggle.querySelector('i').classList.add('text-primary', 'dark:text-primary-dark');
+                } else {
+                    // 退出极简模式：显示所有板块，恢复背景blur效果
+                    contentSections.forEach(section => {
+                        section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                        section.style.opacity = '1';
+                        section.style.transform = 'translateY(0)';
+                        section.style.pointerEvents = 'auto';
+                    });
+                    
+                    // 恢复背景模糊效果
+                    if (bgImage) {
+                        bgImage.style.transition = 'filter 0.5s ease';
+                        bgImage.style.filter = 'blur(4px)';
+                    }
+                    
+                    // 移除极简模式按钮的激活样式
+                    minimalModeToggle.classList.remove('bg-primary/20', 'dark:bg-primary-dark/20');
+                    minimalModeToggle.querySelector('i').classList.remove('text-primary', 'dark:text-primary-dark');
+                }
+            });
+            
+            // 添加页面滚动动画
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            document.querySelectorAll('.card-hover:not(.animate-fade-in)').forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // 项目折叠/展开
+        function toggleProjects() {
+            const items = document.querySelectorAll('.project-hidden, .project-visible');
+            const btn = document.getElementById('toggle-projects');
+            const expanded = btn.dataset.expanded === '1';
+            items.forEach(el => {
+                el.classList.toggle('project-hidden', expanded);
+                el.classList.toggle('project-visible', !expanded);
+            });
+            btn.dataset.expanded = expanded ? '0' : '1';
+            btn.innerHTML = expanded
+                ? '<i class="fa-solid fa-chevron-down mr-1"></i> 展开全部项目'
+                : '<i class="fa-solid fa-chevron-up mr-1"></i> 收起';
+        }
+    </script>
+</body>
+</html>

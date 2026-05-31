@@ -1,0 +1,13 @@
+{
+  "projects": [
+    {
+      "name": "Kleceblog",
+      "description": "一个静态的blog，无需服务器即可部署，个人二改",
+      "url": "https://github.com/Klece/Kleceblog",
+      "language": "HTML",
+      "tags": ["HTML", "Flask", "Blog"],
+      "stars": 0,
+      "updated": "2026-05-29"
+    }
+  ]
+}

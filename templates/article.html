@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - {{ config.name }}</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <style>
+        @font-face {
+            font-family: 'LoliFont';
+            src: url('/fonts/loli-font.ttf') format('truetype');
+        }
+        .loli-font, body, .article-text, .article-text * { font-family: 'LoliFont', 'Inter', system-ui, sans-serif; }
+
+        body {
+            background-color: #121212;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        {% if background_exists %}
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ background_path }}');
+            background-size: cover;
+            background-position: center;
+            filter: blur({{ config.background.blur }}px);
+            transform: scale(1.1);
+        }
+        .bg-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: {{ config.background.overlay_color }};
+            opacity: {{ config.background.overlay_opacity }};
+        }
+        .dark .bg-overlay {
+            background-color: {{ config.background.dark_overlay_color }};
+        }
+        {% endif %}
+
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            position: relative; overflow: hidden;
+        }
+        .glass-panel::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, {{ config.theme.primary_color }}, transparent);
+        }
+        .glass-panel::before {
+            content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+            background: linear-gradient(90deg, transparent, {{ config.theme.secondary_color }}, transparent);
+        }
+        .glass-panel-plain {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            position: relative; overflow: hidden;
+        }
+        .dark .glass-panel-plain {
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header-glow {
+            text-shadow: 0 2px 12px {{ config.theme.primary_color }}66;
+        }
+        /* Markdown 内容白色字体 */
+        #article-content, #article-content * { color: #ffffff !important; }
+        #article-content h1, #article-content h2, #article-content h3, #article-content h4 { color: #ffffff !important; border-color: rgba(255,255,255,0.3) !important; }
+        #article-content p, #article-content li, #article-content span { color: #ffffff !important; }
+        #article-content a { color: #93c5fd !important; }
+        #article-content blockquote { border-color: rgba(255,255,255,0.4) !important; background: rgba(255,255,255,0.08) !important; color: #ffffff !important; }
+        #article-content code { background: rgba(255,255,255,0.15) !important; color: #fca5a5 !important; }
+        #article-content pre { background: rgba(0,0,0,0.7) !important; }
+        #article-content pre code { color: #e5e7eb !important; }
+        #article-content hr { border-color: rgba(255,255,255,0.2) !important; }
+        #article-content table, #article-content th, #article-content td { border-color: rgba(255,255,255,0.2) !important; }
+        #article-content th { background: rgba(255,255,255,0.1) !important; color: #ffffff !important; }
+        #article-content td { color: #ffffff !important; }
+        #article-content img { border-radius: 0.5rem; }
+    </style>
+</head>
+<body class="text-gray-800 dark:text-gray-200 min-h-screen">
+    {% if background_exists %}
+    <div class="bg-container">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+    </div>
+    {% endif %}
+
+    <!-- 顶部标题区域 -->
+    <header class="pt-12 pb-6">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <a href="/articles" class="inline-flex items-center text-white/60 hover:text-white/90 transition-colors mb-4 text-sm">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>返回文章列表
+                </a>
+                <h1 class="text-3xl font-bold header-glow" style="font-family:'LoliFont','Inter',system-ui,sans-serif;color:#fff;">
+                    <i class="fa-solid fa-file-lines mr-3"></i>{{ title }}
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="container mx-auto px-4 pb-16">
+        <div class="max-w-4xl mx-auto animate-fade-in">
+            <div class="glass-panel-plain rounded-2xl p-8">
+                <div class="article-text max-w-none" id="article-content" style="font-family:'LoliFont','Inter',system-ui,sans-serif;">
+                    {{ content|safe }}
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.body.classList.add('dark');
+        }
+        function applyStyles() {
+            const c = document.getElementById('article-content');
+            if (!c) return;
+            c.querySelectorAll('h1').forEach(e => { if (!e.style.fontFamily) e.style.cssText += ';font-family:LoliFont,Inter,system-ui,sans-serif;color:#fff;' });
+            c.querySelectorAll('h2, h3, h4, p, li, span').forEach(e => { if (!e.style.fontFamily) e.style.cssText += ';font-family:LoliFont,Inter,system-ui,sans-serif;' });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyStyles);
+        else applyStyles();
+    </script>
+</body>
+</html>

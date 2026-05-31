@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的文章 - {{ config.name }}</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @font-face {
+            font-family: 'LoliFont';
+            src: url('/fonts/loli-font.ttf') format('truetype');
+        }
+        .loli-font { font-family: 'LoliFont', 'Inter', system-ui, sans-serif; color: #ffffff; }
+        body {
+            background-color: #121212;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            color: #1f2937;
+        }
+        body.dark { background-color: #111827; color: #e5e7eb; }
+        {% if background_exists %}
+        .bg-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden;
+        }
+        .bg-image {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url('{{ background_path }}');
+            background-size: cover; background-position: center;
+            filter: blur({{ config.background.blur }}px);
+            transform: scale(1.1);
+        }
+        .bg-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: {{ config.background.overlay_color }};
+            opacity: {{ config.background.overlay_opacity }};
+        }
+        .dark .bg-overlay {
+            background-color: {{ config.background.dark_overlay_color }};
+        }
+        {% endif %}
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, {{ config.theme.primary_color }}, transparent);
+            animation: border-glow 4s ease-in-out infinite;
+        }
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, {{ config.theme.secondary_color }}, transparent);
+            animation: border-glow 4s ease-in-out infinite reverse;
+        }
+        .dark .glass-panel::after {
+            background: linear-gradient(90deg, transparent, {{ config.theme.dark_primary_color }}, transparent);
+        }
+        .dark .glass-panel::before {
+            background: linear-gradient(90deg, transparent, {{ config.theme.dark_secondary_color }}, transparent);
+        }
+        .dark .glass-panel {
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        @keyframes border-glow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header-glow {
+            text-shadow: 0 2px 12px {{ config.theme.primary_color }}66;
+        }
+        .art-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            min-height: 40px;
+            max-width:350px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .art-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .art-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, {{ config.theme.primary_color }}, transparent);
+            animation: border-glow 4s ease-in-out infinite;
+        }
+        .art-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, {{ config.theme.secondary_color }}, transparent);
+            animation: border-glow 4s ease-in-out infinite reverse;
+        }
+        .dark .art-card::after {
+            background: linear-gradient(90deg, transparent, {{ config.theme.dark_primary_color }}, transparent);
+        }
+        .dark .art-card::before {
+            background: linear-gradient(90deg, transparent, {{ config.theme.dark_secondary_color }}, transparent);
+        }
+        .dark .art-card {
+            background: rgba(17, 24, 39, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .art-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-align: center;
+            color: #ffffff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin: 0;
+        }
+        .art-link {
+            display: block;
+            text-decoration: none;
+            animation: fadeIn 0.8s ease-in;
+            margin-bottom: 1.5rem;
+        }
+        .art-link:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    {% if background_exists %}
+    <div class="bg-container">
+        <div class="bg-image"></div>
+        <div class="bg-overlay"></div>
+    </div>
+    {% endif %}
+
+    <header class="pt-24 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto text-center animate-fade-in">
+                <a href="/" class="inline-flex items-center" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.3s; margin-bottom: 1rem; font-size: 0.875rem;">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>返回主页
+                </a>
+                <h1 class="text-4xl font-bold loli-font header-glow">
+                    <i class="fa-solid fa-book mr-3"></i>我的文章
+                    <span style="display: inline-block; font-size: 0.75rem; background: #ff6b6b; color: white; padding: 2px 8px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">hello</span>
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 pb-16">
+        <div class="max-w-4xl mx-auto">
+            {% if articles %}
+                <div class="grid grid-cols-1 md:grid-cols-2"><!-- v2 -->
+                    {% for art in articles %}
+                    <a href="/article/{{ art.slug }}" class="art-link" style="animation-delay: {{ loop.index0 * 0.08 }}s;">
+                        <div class="art-card">
+                            <h2 class="art-title">{{ art.title }}</h2>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="glass-panel bg-white/30 dark:bg-gray-800/30 rounded-2xl shadow-xl p-16 text-center animate-fade-in">
+                    <div class="text-6xl mb-6" style="color: {{ config.theme.primary_color }}66;">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <p class="text-2xl font-bold" style="color: #ffffff;">还没有文章喵~</p>
+                    <p style="color: rgba(255,255,255,0.5); margin-top: 0.5rem; font-size: 0.875rem;">等主人有空了写几篇吧！</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.body.classList.add('dark');
+        }
+    </script>
+</body>
+</html>
