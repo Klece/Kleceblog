@@ -11,9 +11,9 @@
             font-family: 'LoliFont';
             src: url('/fonts/loli-font.ttf') format('truetype');
         }
-        .loli-font { font-family: 'LoliFont', 'Inter', system-ui, sans-serif; color: #ffffff; }
+        .loli-font { font-family: 'LoliFont', 'Inter', system-ui, sans-serif; }
         body {
-            background-color: #121212;
+            background-color: #f3f4f6;
             transition: background-color 0.3s ease, color 0.3s ease;
             color: #1f2937;
         }
@@ -159,12 +159,13 @@
             font-size: 1.25rem;
             font-weight: 700;
             text-align: center;
-            color: #ffffff;
+            color: #1f2937;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             margin: 0;
         }
+        body.dark .art-title { color: #ffffff; }
         .art-link {
             display: block;
             text-decoration: none;
@@ -187,10 +188,10 @@
     <header class="pt-24 pb-8">
         <div class="container mx-auto px-4">
             <div class="max-w-4xl mx-auto text-center animate-fade-in">
-                <a href="/" class="inline-flex items-center" style="color: rgba(255,255,255,0.6); text-decoration: none; transition: color 0.3s; margin-bottom: 1rem; font-size: 0.875rem;">
+                <a href="/" class="inline-flex items-center text-gray-500 dark:text-white/60 hover:text-gray-700 dark:hover:text-white/90 transition-colors mb-4 text-sm">
                     <i class="fa-solid fa-arrow-left mr-2"></i>返回主页
                 </a>
-                <h1 class="text-4xl font-bold loli-font header-glow">
+                <h1 class="text-4xl font-bold loli-font header-glow text-gray-900 dark:text-white">
                     <i class="fa-solid fa-book mr-3"></i>我的文章
                     <span style="display: inline-block; font-size: 0.75rem; background: #ff6b6b; color: white; padding: 2px 8px; border-radius: 4px; vertical-align: middle; margin-left: 8px;">hello</span>
                 </h1>
@@ -215,8 +216,8 @@
                     <div class="text-6xl mb-6" style="color: {{ config.theme.primary_color }}66;">
                         <i class="fa-solid fa-book-open"></i>
                     </div>
-                    <p class="text-2xl font-bold" style="color: #ffffff;">还没有文章喵~</p>
-                    <p style="color: rgba(255,255,255,0.5); margin-top: 0.5rem; font-size: 0.875rem;">等主人有空了写几篇吧！</p>
+                    <p class="text-2xl font-bold text-gray-800 dark:text-white">还没有文章喵~</p>
+                    <p class="text-gray-500 dark:text-white/50 mt-2 text-sm">等主人有空了写几篇吧！</p>
                 </div>
             {% endif %}
         </div>

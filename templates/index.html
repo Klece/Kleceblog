@@ -854,8 +854,9 @@
             /* 极简模式功能 */
             const minimalModeToggle = document.getElementById('minimal-mode-toggle');
             // 修改选择器，包含所有板块，修复转义字符
-            const contentSections = document.querySelectorAll('div.lg\\:col-span-1, div.lg\\:col-span-2 > div, div.lg\\:col-span-2 > a');
+            const contentSections = document.querySelectorAll('div.lg\\:col-span-1, div.lg\\:col-span-2 > div, div.lg\\:col-span-2 > a, footer');
             const bgImage = document.querySelector('.bg-image');
+            const bgOverlay = document.querySelector('.bg-overlay');
             let isMinimalMode = false;
             
             // 极简模式切换事件处理
@@ -876,6 +877,11 @@
                         bgImage.style.transition = 'filter 0.5s ease';
                         bgImage.style.filter = 'blur(0px)';
                     }
+                    // 隐藏背景蒙板
+                    if (bgOverlay) {
+                        bgOverlay.style.transition = 'opacity 0.5s ease';
+                        bgOverlay.style.opacity = '0';
+                    }
                     
                     // 给极简模式按钮添加激活样式
                     minimalModeToggle.classList.add('bg-primary/20', 'dark:bg-primary-dark/20');
@@ -893,6 +899,11 @@
                     if (bgImage) {
                         bgImage.style.transition = 'filter 0.5s ease';
                         bgImage.style.filter = 'blur({{ config.background.blur }}px)';
+                    }
+                    // 恢复背景蒙板
+                    if (bgOverlay) {
+                        bgOverlay.style.transition = 'opacity 0.5s ease';
+                        bgOverlay.style.opacity = '{{ config.background.overlay_opacity }}';
                     }
                     
                     // 移除极简模式按钮的激活样式

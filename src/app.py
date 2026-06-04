@@ -220,27 +220,28 @@ def get_article_content(slug):
             }
         )
 
-def get_background():
-    bg_name = config.get('background', {}).get('image', 'background.jpg')
-    possible = [
-        os.path.join(BASE_DIR, 'content', bg_name),
-        os.path.join(BASE_DIR, bg_name),
-        os.path.join(os.getcwd(), bg_name),
-        os.path.join(os.getcwd(), 'static', bg_name)
+IMG_EXTS = {'.jpg','.jpeg','.png','.gif','.webp','.bmp','.svg','.heic','.heif','.avif'}
+
+def find_bg():
+    """扫描目录自动匹配 background.* 任意图片格式"""
+    dirs = [
+        (os.path.join(BASE_DIR, 'content'), '/content/'),
+        (os.getcwd(), ''),
+        (os.path.join(os.getcwd(), 'static'), '/static/'),
     ]
-    exists = False
-    path = bg_name
-    for p in possible:
-        if os.path.exists(p):
-            exists = True
-            if 'static' in p:
-                path = f'/static/{bg_name}'
-            elif BASE_DIR in p:
-                path = f'/content/{bg_name}'
-            else:
-                path = bg_name
-            break
-    return exists, path
+    for d, url_pre in dirs:
+        if not os.path.isdir(d):
+            continue
+        for fn in sorted(os.listdir(d)):
+            low = fn.lower()
+            if low.startswith('background'):
+                _, ext = os.path.splitext(low)
+                if ext in IMG_EXTS:
+                    return True, url_pre + fn
+    return False, config.get('background', {}).get('image', 'background.jpg')
+
+def get_background():
+    return find_bg()
 
 # GitHub API 请求函数
 def make_github_request(url, timeout=5):
@@ -358,7 +359,7 @@ def get_projects():
 _contrib_cache = None
 
 def get_github_contributions(months=12):
-    """从 Events API + per-repo Commits API 获取真实贡献数据，绝不生成假数据"""
+    """从 Deployments API（优先）+ Commits API（回退）获取真实贡献数据"""
     global _contrib_cache
     if _contrib_cache is not None:
         print("命中贡献数据缓存")
@@ -378,50 +379,61 @@ def get_github_contributions(months=12):
     processed = set()  # 去重
     
     try:
-        # ===== 1. 获取用户所有仓库（备份中的 repos API 遍历策略） =====
+        # ===== 获取所有仓库，优先用 Deployments =====
         repos_r = make_github_request(f'https://api.github.com/users/{username}/repos?per_page=100')
         if repos_r.status_code == 200:
             repos = repos_r.json()
-            print(f"获取到 {len(repos)} 个仓库，开始查询各仓库的提交记录")
-            for repo in repos:
-                rn = repo['name']
-                # 查询该仓库中该用户的 commits（备份中没有 author 参数，但我们加上更精确）
-                c_r = make_github_request(
-                    f'https://api.github.com/repos/{username}/{rn}/commits?author={username}&per_page=100'
-                )
-                if c_r.status_code == 200:
-                    commits = c_r.json()
-                    for c in commits:
-                        sha = c.get('sha', '')
-                        if sha and sha not in processed:
-                            processed.add(sha)
-                            try:
-                                dt = c['commit']['committer']['date'][:7]
-                                by_month[dt] += 1
-                            except:
-                                pass
-                    if commits:
-                        print(f"  {rn}: {len(commits)} 个提交")
-                elif c_r.status_code == 409:
-                    pass  # 空仓库，跳过
         else:
+            repos = []
             print(f"获取仓库列表失败 ({repos_r.status_code})")
         
-        # ===== 2. 获取 Events API（备份中的策略，捕获跨仓库提交） =====
-        ev_r = make_github_request(f'https://api.github.com/users/{username}/events/public?per_page=300')
-        if ev_r.status_code == 200:
-            evts = ev_r.json()
-            print(f"Events API 获取到 {len(evts)} 个事件")
-            for e in evts:
-                if e['type'] != 'PushEvent':
-                    continue
-                commits = e.get('payload', {}).get('commits', [])
-                if commits:
-                    mk = e['created_at'][:7]
-                    # Events API 的 commit 对象是简化的，没有完整 sha，直接加数量
-                    by_month[mk] += len(commits)
+        dep_processed = set()
         
-        # ===== 3. 填充到结果 =====
+        for repo in repos:
+            rn = repo['name']
+            # 先查 deployments
+            dep_r = make_github_request(
+                f'https://api.github.com/repos/{username}/{rn}/deployments?per_page=100'
+            )
+            if dep_r.status_code == 200:
+                deps = dep_r.json()
+                if deps:
+                    for d in deps:
+                        did = d.get('id')
+                        if not did or did in dep_processed:
+                            continue
+                        dep_processed.add(did)
+                        by_month[d['created_at'][:7]] += 1
+                    print(f"  {rn}: {len(deps)} 个 Deployments")
+                    continue  # 有deployment就跳过commits
+            
+            # 没有deployment，回退到Commits API
+            for page in range(1, 6):
+                c_r = make_github_request(
+                    f'https://api.github.com/repos/{username}/{rn}/commits?per_page=100&page={page}'
+                )
+                if c_r.status_code == 409:
+                    break
+                if c_r.status_code != 200:
+                    break
+                commits = c_r.json()
+                if not commits:
+                    break
+                for c in commits:
+                    sha = c.get('sha', '')
+                    if not sha or sha in processed:
+                        continue
+                    al = (c.get('author') or {}).get('login', '')
+                    cl = (c.get('committer') or {}).get('login', '')
+                    if al != username and cl != username:
+                        continue
+                    processed.add(sha)
+                    try:
+                        by_month[c['commit']['committer']['date'][:7]] += 1
+                    except:
+                        pass
+                if len(commits) < 100:
+                    break
         for mk, cnt in by_month.items():
             try:
                 mn = int(mk[5:7])
@@ -467,39 +479,8 @@ def index():
     # 获取贡献数据（最近12个月）
     contributions = get_github_contributions(months=12)
     
-    # 检查背景图片
-    background_image = config.get('background', {}).get('image', 'background.jpg')
-    print(f"开始检查背景图片: {background_image}")
-    
-    possible_paths = [
-        os.path.join(BASE_DIR, 'content', background_image),
-        os.path.join(BASE_DIR, background_image),
-        os.path.join(os.getcwd(), background_image),
-        os.path.join(os.getcwd(), 'static', background_image)
-    ]
-    
-    print(f"可能的背景图片路径: {possible_paths}")
-    
-    background_exists = False
-    background_path = background_image
-    
-    for path in possible_paths:
-        print(f"检查路径: {path}, 存在: {os.path.exists(path)}")
-        if os.path.exists(path):
-            background_exists = True
-            if 'static' in path:
-                background_path = f'/static/{background_image}'
-                print(f"使用static路径: {background_path}")
-            elif BASE_DIR in path:
-                # 使用相对路径，便于部署到 GitHub Pages
-                background_path = f'/content/{background_image}'
-                print(f"使用content相对路径: {background_path}")
-            else:
-                background_path = background_image
-                print(f"使用原始路径: {background_path}")
-            break
-    
-    print(f"最终背景图片状态: exists={background_exists}, path={background_path}")
+    background_exists, background_path = find_bg()
+    print(f"背景图片: exists={background_exists}, path={background_path}")
     
     # 构建返回数据
     github_info = {

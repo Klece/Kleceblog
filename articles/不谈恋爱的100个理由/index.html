@@ -15,8 +15,13 @@
         .loli-font, body, .article-text, .article-text * { font-family: 'LoliFont', 'Inter', system-ui, sans-serif; }
 
         body {
-            background-color: #121212;
+            background-color: #f3f4f6;
+            color: #1f2937;
             transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        body.dark {
+            background-color: #121212;
+            color: #e5e7eb;
         }
 
         
@@ -35,7 +40,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('../../content/background.jpg');
+            background-image: url('../../content/background.png');
             background-size: cover;
             background-position: center;
             filter: blur(4px);
@@ -92,19 +97,32 @@
         .header-glow {
             text-shadow: 0 2px 12px #6a11cb66;
         }
-        /* Markdown 内容白色字体 */
-        #article-content, #article-content * { color: #ffffff !important; }
-        #article-content h1, #article-content h2, #article-content h3, #article-content h4 { color: #ffffff !important; border-color: rgba(255,255,255,0.3) !important; }
-        #article-content p, #article-content li, #article-content span { color: #ffffff !important; }
-        #article-content a { color: #93c5fd !important; }
-        #article-content blockquote { border-color: rgba(255,255,255,0.4) !important; background: rgba(255,255,255,0.08) !important; color: #ffffff !important; }
-        #article-content code { background: rgba(255,255,255,0.15) !important; color: #fca5a5 !important; }
-        #article-content pre { background: rgba(0,0,0,0.7) !important; }
-        #article-content pre code { color: #e5e7eb !important; }
-        #article-content hr { border-color: rgba(255,255,255,0.2) !important; }
-        #article-content table, #article-content th, #article-content td { border-color: rgba(255,255,255,0.2) !important; }
-        #article-content th { background: rgba(255,255,255,0.1) !important; color: #ffffff !important; }
-        #article-content td { color: #ffffff !important; }
+        /* Markdown 内容 - 日间深色，夜间白色 */
+        #article-content { color: #1f2937; }
+        #article-content h1, #article-content h2, #article-content h3, #article-content h4 { color: #111827; border-color: rgba(0,0,0,0.15); }
+        #article-content p, #article-content li, #article-content span { color: #374151; }
+        #article-content a { color: #2563eb; }
+        #article-content blockquote { border-color: rgba(0,0,0,0.2); background: rgba(0,0,0,0.04); color: #4b5563; }
+        #article-content code { background: rgba(0,0,0,0.08); color: #dc2626; }
+        #article-content pre { background: rgba(0,0,0,0.06); }
+        #article-content pre code { color: #1f2937; }
+        #article-content hr { border-color: rgba(0,0,0,0.15); }
+        #article-content table, #article-content th, #article-content td { border-color: rgba(0,0,0,0.15); }
+        #article-content th { background: rgba(0,0,0,0.06); color: #111827; }
+        #article-content td { color: #374151; }
+
+        body.dark #article-content { color: #ffffff; }
+        body.dark #article-content h1, body.dark #article-content h2, body.dark #article-content h3, body.dark #article-content h4 { color: #ffffff; border-color: rgba(255,255,255,0.3); }
+        body.dark #article-content p, body.dark #article-content li, body.dark #article-content span { color: #ffffff; }
+        body.dark #article-content a { color: #93c5fd; }
+        body.dark #article-content blockquote { border-color: rgba(255,255,255,0.4); background: rgba(255,255,255,0.08); color: #ffffff; }
+        body.dark #article-content code { background: rgba(255,255,255,0.15); color: #fca5a5; }
+        body.dark #article-content pre { background: rgba(0,0,0,0.7); }
+        body.dark #article-content pre code { color: #e5e7eb; }
+        body.dark #article-content hr { border-color: rgba(255,255,255,0.2); }
+        body.dark #article-content table, body.dark #article-content th, body.dark #article-content td { border-color: rgba(255,255,255,0.2); }
+        body.dark #article-content th { background: rgba(255,255,255,0.1); color: #ffffff; }
+        body.dark #article-content td { color: #ffffff; }
         #article-content img { border-radius: 0.5rem; }
     </style>
 </head>
@@ -123,7 +141,7 @@
                 <a href="../" class="inline-flex items-center text-white/60 hover:text-white/90 transition-colors mb-4 text-sm">
                     <i class="fa-solid fa-arrow-left mr-2"></i>返回文章列表
                 </a>
-                <h1 class="text-3xl font-bold header-glow" style="font-family:'LoliFont','Inter',system-ui,sans-serif;color:#fff;">
+                <h1 class="text-3xl font-bold header-glow text-white" style="font-family:'LoliFont','Inter',system-ui,sans-serif;">
                     <i class="fa-solid fa-file-lines mr-3"></i>不谈恋爱的100个理由
                 </h1>
             </div>
@@ -299,7 +317,7 @@
         function applyStyles() {
             const c = document.getElementById('article-content');
             if (!c) return;
-            c.querySelectorAll('h1').forEach(e => { if (!e.style.fontFamily) e.style.cssText += ';font-family:LoliFont,Inter,system-ui,sans-serif;color:#fff;' });
+            c.querySelectorAll('h1').forEach(e => { if (!e.style.fontFamily) e.style.cssText += ';font-family:LoliFont,Inter,system-ui,sans-serif;' });
             c.querySelectorAll('h2, h3, h4, p, li, span').forEach(e => { if (!e.style.fontFamily) e.style.cssText += ';font-family:LoliFont,Inter,system-ui,sans-serif;' });
         }
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', applyStyles);

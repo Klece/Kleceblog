@@ -300,7 +300,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('content/background.jpg');
+            background-image: url('content/background.png');
             background-size: cover;
             background-position: center;
             filter: blur(4px);
@@ -567,31 +567,11 @@
                                     </div>
                                     <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
                                         <span><i class="fa-solid fa-code mr-1"></i>HTML</span>
-                                        <span>更新于 2026-05-01</span>
+                                        <span>更新于 2026-05-31</span>
                                     </div>
                                 </a>
                             
-                                <a href="https://github.com/Klece/jj" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600 ">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <h3 class="text-lg font-semibold text-primary dark:text-primary-dark">jj</h3>
-                                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
-                                            <i class="fa-solid fa-star mr-1"></i>
-                                            0
-                                        </span>
-                                    </div>
-                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">None</p>
-                                    <div class="flex flex-wrap gap-2 mb-2">
-                                        
-                                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">Shell</span>
-                                        
-                                    </div>
-                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
-                                        <span><i class="fa-solid fa-code mr-1"></i>Shell</span>
-                                        <span>更新于 2026-05-30</span>
-                                    </div>
-                                </a>
-                            
-                                <a href="https://github.com/Klece/ceshi" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600 project-hidden">
+                                <a href="https://github.com/Klece/ceshi" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600 ">
                                     <div class="flex justify-between items-start mb-2">
                                         <h3 class="text-lg font-semibold text-primary dark:text-primary-dark">ceshi</h3>
                                         <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
@@ -607,6 +587,26 @@
                                     </div>
                                     <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
                                         <span><i class="fa-solid fa-code mr-1"></i>HTML</span>
+                                        <span>更新于 2026-05-31</span>
+                                    </div>
+                                </a>
+                            
+                                <a href="https://github.com/Klece/jj" target="_blank" rel="noopener noreferrer" class="block p-4 bg-gray-50 dark:bg-gray-700 rounded-xl repo-item hover:bg-gray-100 dark:hover:bg-gray-600 project-hidden">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="text-lg font-semibold text-primary dark:text-primary-dark">jj</h3>
+                                        <span class="text-sm text-gray-500 dark:text-gray-400 flex items-center">
+                                            <i class="fa-solid fa-star mr-1"></i>
+                                            0
+                                        </span>
+                                    </div>
+                                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-2">None</p>
+                                    <div class="flex flex-wrap gap-2 mb-2">
+                                        
+                                            <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">Shell</span>
+                                        
+                                    </div>
+                                    <div class="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400">
+                                        <span><i class="fa-solid fa-code mr-1"></i>Shell</span>
                                         <span>更新于 2026-05-30</span>
                                     </div>
                                 </a>
@@ -696,7 +696,7 @@
             const ctx = document.getElementById('contributionChart');
             if (ctx) {
                 // 使用后端传递的真实贡献数据
-                const contributions = [{"count": 0, "date": "1\u6708"}, {"count": 0, "date": "2\u6708"}, {"count": 3, "date": "3\u6708"}, {"count": 5, "date": "4\u6708"}, {"count": 4, "date": "5\u6708"}, {"count": 0, "date": "6\u6708"}, {"count": 0, "date": "7\u6708"}, {"count": 0, "date": "8\u6708"}, {"count": 0, "date": "9\u6708"}, {"count": 0, "date": "10\u6708"}, {"count": 0, "date": "11\u6708"}, {"count": 0, "date": "12\u6708"}];
+                const contributions = [{"count": 0, "date": "1\u6708"}, {"count": 0, "date": "2\u6708"}, {"count": 2, "date": "3\u6708"}, {"count": 5, "date": "4\u6708"}, {"count": 8, "date": "5\u6708"}, {"count": 0, "date": "6\u6708"}, {"count": 0, "date": "7\u6708"}, {"count": 0, "date": "8\u6708"}, {"count": 0, "date": "9\u6708"}, {"count": 0, "date": "10\u6708"}, {"count": 0, "date": "11\u6708"}, {"count": 0, "date": "12\u6708"}];
                 const labels = contributions.map(c => c.date);
                 const data = contributions.map(c => c.count);
 
@@ -872,8 +872,9 @@
             /* 极简模式功能 */
             const minimalModeToggle = document.getElementById('minimal-mode-toggle');
             // 修改选择器，包含所有板块，修复转义字符
-            const contentSections = document.querySelectorAll('div.lg\\:col-span-1, div.lg\\:col-span-2 > div, div.lg\\:col-span-2 > a');
+            const contentSections = document.querySelectorAll('div.lg\\:col-span-1, div.lg\\:col-span-2 > div, div.lg\\:col-span-2 > a, footer');
             const bgImage = document.querySelector('.bg-image');
+            const bgOverlay = document.querySelector('.bg-overlay');
             let isMinimalMode = false;
             
             // 极简模式切换事件处理
@@ -894,6 +895,11 @@
                         bgImage.style.transition = 'filter 0.5s ease';
                         bgImage.style.filter = 'blur(0px)';
                     }
+                    // 隐藏背景蒙板
+                    if (bgOverlay) {
+                        bgOverlay.style.transition = 'opacity 0.5s ease';
+                        bgOverlay.style.opacity = '0';
+                    }
                     
                     // 给极简模式按钮添加激活样式
                     minimalModeToggle.classList.add('bg-primary/20', 'dark:bg-primary-dark/20');
@@ -911,6 +917,11 @@
                     if (bgImage) {
                         bgImage.style.transition = 'filter 0.5s ease';
                         bgImage.style.filter = 'blur(4px)';
+                    }
+                    // 恢复背景蒙板
+                    if (bgOverlay) {
+                        bgOverlay.style.transition = 'opacity 0.5s ease';
+                        bgOverlay.style.opacity = '0.6';
                     }
                     
                     // 移除极简模式按钮的激活样式

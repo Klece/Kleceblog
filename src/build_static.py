@@ -103,6 +103,22 @@ else:
             shutil.copy2(os.path.join(BASE_DIR, 'default', background_image),
                         os.path.join(BASE_DIR, 'content', background_image))
 
+# 自动匹配 background.* 图片（兼容任意格式）
+IMG_EXTS = {'.jpg','.jpeg','.png','.gif','.webp','.bmp','.svg'}
+background_image = None
+content_dir = os.path.join(BASE_DIR, 'content')
+if os.path.isdir(content_dir):
+    for fn in sorted(os.listdir(content_dir)):
+        low = fn.lower()
+        if low.startswith('background'):
+            _, ext = os.path.splitext(low)
+            if ext in IMG_EXTS:
+                background_image = fn
+                break
+if not background_image:
+    background_image = config.get('background', {}).get('image', 'background.jpg')
+print(f"背景图片: {background_image}")
+
 # 导入app.py
 print("正在准备生成静态文件...")
 spec = importlib.util.spec_from_file_location("app", os.path.join(here, "app.py"))
