@@ -357,11 +357,13 @@ def get_projects():
 
 # 获取GitHub贡献数据（只使用真实API数据）
 _contrib_cache = None
+_ct = 0
 
 def get_github_contributions(months=12):
     """从 Deployments API（优先）+ Commits API（回退）获取真实贡献数据"""
-    global _contrib_cache
-    if _contrib_cache is not None:
+    global _contrib_cache, _ct
+    from time import time
+    if _contrib_cache is not None and time() - _ct < 3600:
         print("命中贡献数据缓存")
         return _contrib_cache
     
@@ -434,8 +436,11 @@ def get_github_contributions(months=12):
                         pass
                 if len(commits) < 100:
                     break
+        y = str(datetime.now().year)
         for mk, cnt in by_month.items():
             try:
+                if mk[:4] != y:
+                    continue
                 mn = int(mk[5:7])
                 result[mn - 1]['count'] += cnt
             except:
@@ -445,11 +450,13 @@ def get_github_contributions(months=12):
         print(f"真实贡献: {[(r['date'], r['count']) for r in result]} (总计:{total})")
         
         _contrib_cache = result
+        _ct = time()
         return result
         
     except Exception as e:
         print(f"获取贡献数据失败: {e}，返回空数据")
         _contrib_cache = result
+        _ct = time()
         return result
 
 @app.route('/')
