@@ -85,15 +85,7 @@ def load_all_configs():
             projects_data = json.load(f)
     except FileNotFoundError:
         projects_data = {"projects": []}
-    
-    # 读取像素文字配置
-    try:
-        with open(os.path.join(BASE_DIR, 'config', 'pixel-text.json'), 'r', encoding='utf-8') as f:
-            pixel_text_data = json.load(f)
-            print(f"成功读取像素文字配置，包含 {len(pixel_text_data)} 个字")
-    except FileNotFoundError:
-        pixel_text_data = {"我": {"width": 12, "height": 12, "pixels": []}, "爱": {"width": 12, "height": 12, "pixels": []}, "雨": {"width": 12, "height": 12, "pixels": []}, "云": {"width": 12, "height": 12, "pixels": []}}
-
+        
 # 模块加载时立即加载配置
 load_all_configs()
 
