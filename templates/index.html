@@ -461,11 +461,13 @@
                                 访问我的 GitHub
                             </a>
                             {% if config.contact.qq and config.contact.qq != '' %}
+                            {% set qq_url = config.contact.qq if config.contact.qq.startswith('http') else 'https://tmini.net/api/qq.qun?jsh=' + config.contact.qq %}
                             <a 
-                                href="#" 
-                                onclick="copyToClipboard('{{ config.contact.qq }}', 'QQ号'); return false;" 
+                                href="{{ qq_url }}" 
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 class="inline-flex items-center px-4 py-2 rounded-full bg-gradient-custom text-white font-medium hover:opacity-90 transition-opacity"
-                                title="点击复制QQ号"
+                                title="打开QQ聊天"
                             >
                                 <i class="fa-brands fa-qq mr-2"></i>
                                 QQ
